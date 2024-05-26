@@ -1,0 +1,293 @@
+---
+title: "Practical 1B - microbiota data"
+subtitle: "NUTRIM microbiome & metabolome workshop"
+author: David Barnett
+date: last-modified
+keep-md: false
+theme: 
+  light: flatly
+  dark: darkly
+format: html
+embed-resources: true
+code-block-border-left: true
+code-block-bg: true
+toc: true
+toc-location: right
+toc-depth: 4
+toc-expand: 3
+number-sections: true
+number-depth: 3
+fig-align: center
+fig-dpi: 300
+fig-width: 7.5
+fig-height: 5
+fig-responsive: true
+code-tools: true
+code-fold: false
+code-link: true
+lightbox: auto
+cache: false
+---
+
+## Intro
+
+Now we're going to look at the microbiota data.
+
+::: {.callout-note collapse="true"}
+### A note on sequence data processing
+
+These data have already been processed into a table, counts of how often each sequence occurs in each sample.
+
+It started as huge fastq text files, full of As, Cs, Ts and Gs, but we will not practice sequence data processing today, because it takes quite a long time to run.
+
+If you generate your data with us at Medical Microbiology, we will run the latest processing approaches on our computational infrastructure and provide you with the processed data.
+
+Nowadays we do amplicon sequencing with Illumina MiSeq, HiSeq, or similar technologies, and denoise the output with DADA2 to produce ASV count tables.
+
+The example data we will use are a little older. The amplicons were sequenced with 454 pyrosequencing and clustered into OTUs, but the core principles of analysis remain the same.
+
+And as you will see later today, the same approaches can also be applied to taxonomic abundance count tables obtained from shotgun metagenomic sequencing.
+:::
+
+First we're going to use the R skills we practised in part A to inspect this data.
+
+::: {.callout-note collapse="true" appearance="simple"}
+### SOLUTION: (read me?)
+
+-   In this practical, solution blocks like this are available...
+
+-   But try and write code independently before looking at the answer!
+
+-   Attempting to recall knowledge or solve problems is proven to enhance learning.
+
+-   So don't look unless you're really stuck! 💪
+:::
+
+After that, we'll take a look at some specialist R packages for microbiome analysis.
+
+## Learning goals 💪
+
+-   [blah](#blah)
+
+## Load R packages 📦
+
+```{r}
+library(readxl)
+library(here)
+library(tidyverse)
+```
+
+## Read and inspect data 🔍
+
+Read the metadata file from part 1A, using the RDS version.
+
+```{r}
+meta <- read_rds(file = here("data/papa2012/processed/all_metadata.rds"))
+```
+
+Read the count table: this is stored as a TSV (tab-separated variables) formatted text file.
+
+```{r}
+counts <- read_tsv(file = here("data/papa2012/papa2012_OTU_count_table.txt"))
+```
+
+```{r}
+counts
+```
+
+**Your first challenge:** read the taxonomy table stored in `"data/papa2012/papa2012_taxonomy_table.txt"` (call the object `taxonomy`)
+
+::: {.callout-note collapse="true" appearance="simple"}
+#### SOLUTION:
+
+```{r}
+taxonomy <- read_tsv(file = here("data/papa2012/papa2012_taxonomy_table.txt"))
+```
+
+```{r}
+taxonomy
+```
+:::
+
+### Taxonomy table
+
+Now practice inspecting the taxonomy table by completing the following tasks:
+
+::: panel-tabset
+##### Task 1
+
+Check how many distinct genera there are. Tip: use `unique()` and `length()`
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+taxonomy$Genus %>%
+  unique() %>%
+  length()
+```
+:::
+
+##### Task 2
+
+How many OTUs are there in each Phylum? Tip: use `count()` or `table()`
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+taxonomy %>% count(Phylum)
+```
+
+```{r}
+taxonomy$Phylum %>% table(useNA = "ifany")
+```
+:::
+
+##### Task 3
+
+What genera are in the phylum Actinobacteria? Tip: use `filter()`
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+taxonomy %>%
+  filter(Phylum == "Actinobacteria") %>%
+  count(Genus, sort = TRUE)
+```
+
+Or for just their names:
+
+```{r}
+taxonomy %>%
+  filter(Phylum == "Actinobacteria") %>%
+  pull(Genus) %>%
+  unique()
+```
+:::
+:::
+
+### OTU count table
+
+First let's plot a histogram of OTU number 1.
+
+```{r, fig.width=8, fig.height=2}
+counts %>% ggplot(aes(OTU_00001)) +
+  geom_histogram(binwidth = 5)
+```
+
+Looks like there are a lot of zeros!
+
+```{r}
+table(OTU00001_has_0_counts = counts$OTU_00001 == 0, useNA = "ifany")
+```
+
+Attempt the following tasks to explore further!
+
+::: panel-tabset
+##### Task 1
+
+Use `filter()` to plot only the non-zero entries for OTU 1.
+
+Try also using `+ scale_x_log10()` to transform the plot axis scale.
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r, fig.width=8, fig.height=2}
+counts %>%
+  filter(OTU_00001 != 0) %>%
+  ggplot(aes(OTU_00001)) +
+  geom_histogram(bins = 30) +
+  scale_x_log10()
+```
+:::
+
+##### Task 2
+
+Use `mutate()` to temporarily create a new log-transformed variable called log_OTU1 and plot its distribution.
+
+*Note that because you cannot log-transform 0s you will need to add 1 to all values first, i.e.* `log10(OTU_00001 + 1)`
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r, fig.width=8, fig.height=2}
+counts %>%
+  mutate(log_OTU1 = log10(OTU_00001 + 1)) %>%
+  ggplot(aes(log_OTU1)) +
+  geom_histogram(bins = 30)
+```
+:::
+
+##### Task 3
+
+Plot OTU 1 against OTU 2 as a scatter plot using `geom_point`.
+
+Remember to add 1 before log10 transformation of both variables.
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r, fig.width=4, fig.height=4}
+#| out-width: "50%"
+#| fig-align: "center"
+counts %>%
+  mutate(log_OTU1 = log10(OTU_00001 + 1)) %>%
+  mutate(log_OTU2 = log10(OTU_00002 + 1)) %>%
+  ggplot(aes(x = log_OTU1, y = log_OTU2)) +
+  geom_point()
+```
+:::
+
+##### Task 4
+
+Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+```{r}
+taxonomy %>% filter(OTU %in% c("OTU_00001", "OTU_00002"))
+```
+
+```{r}
+taxonomy %>%
+  filter(OTU %in% c("OTU_00001", "OTU_00002")) %>%
+  select(OTU, Phylum, Family, Genus) 
+```
+:::
+
+##### Task 5
+
+Now make histograms and look up the taxonomy for the next thousand OTUs...
+
+::: {.callout-note collapse="true" appearance="simple"}
+##### SOLUTION:
+
+Okay, that was a joke. 🤡
+
+It is possible to make a thousand plots, because R is very good at repetitive tasks.
+
+But, this would not be very useful, because you could not look at them all.
+
+In the next section of this practical, we will explore smarter ways to analyse microbiota compositions.
+
+:::
+:::
+
+
+## Next! ⏩
+
+-   Click here: LINK TO NEXT PAGE
+
+## Session info
+
+<details>
+
+```{r}
+sessioninfo::session_info()
+```
+
+</details>
