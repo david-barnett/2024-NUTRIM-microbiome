@@ -8,6 +8,9 @@ theme:
   light: flatly
   dark: darkly
 format: html
+code-block-border-left: true
+code-block-bg: true
+fig-align: center
 embed-resources: true
 toc: true
 toc-location: right
@@ -35,7 +38,7 @@ lightbox: auto
 
 ## Using Quarto 📝 {#using-quarto}
 
-During this workshop, we will write code and notes in Quarto documents.
+During this workshop, we will write code and notes in [Quarto documents](https://r4ds.hadley.nz/quarto){target="_blank"}.
 
 Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
 
@@ -60,6 +63,8 @@ It is good practice to load all the packages you need at the top of your noteboo
 ```{r}
 # `readxl` is for reading data from Excel files
 library(readxl)
+# `writexl` is for writing data to a new Excel file, we'll use this at the end.
+library(writexl)
 ```
 
 ```{r}
@@ -69,7 +74,7 @@ library(here)
 
 ```{r}
 # `tidyverse` is a collection of several packages (dplyr, ggplot2, and others)
-library(tidyverse) 
+library(tidyverse)
 ```
 
 ## Reading data 📂 {#reading-data}
@@ -117,16 +122,17 @@ This is reliable and portable! 🤩 If you share the entire project folder with 
 
 ```{r, eval=FALSE}
 # this works on my machine, but it won't work anywhere else!
-meta <- read_excel(path = "/Users/david/Documents/teaching/workshops/2024-NUTRIM-microbiome/data/papa2012/papa2012_metadata.xlsx", na = "NA")
+meta <- read_excel(
+  path = "/Users/david/Documents/teaching/workshops/2024-NUTRIM-microbiome/data/papa2012/papa2012_metadata.xlsx", 
+  na = "NA"
+)
 ```
 
 #### setwd + relative paths
 
 🤷 **Commonly used but still problematic** 🤷
 
--   You can use paths relative to the *working directory* set with `setwd("/an/absolute/path/on/your/computer")`
-
--   BUT:
+-   You can use paths relative to the *working directory* set with `setwd("/an/absolute/path/on/your/computer")`, BUT:
 
 1.  setwd still uses an absolute path, so it is still not portable!
 
@@ -141,20 +147,6 @@ meta <- read_excel(path = "data/papa2012/papa2012_metadata.xlsx", na = "NA")
 ```
 :::
 :::
-
-<!-- ```{r} -->
-
-<!-- # give your objects an informative name! -->
-
-<!-- taxonomy <- read_tsv(file = here("data/papa2012/papa2012_taxonomy_table.txt")) -->
-
-<!-- ``` -->
-
-<!-- ```{r} -->
-
-<!-- counts <- read_tsv(file = here("data/papa2012/papa2012_OTU_count_table.txt")) -->
-
-<!-- ``` -->
 
 ## Inspecting data {#inspecting-data}
 
@@ -263,7 +255,9 @@ R's base graphics can be used to quickly summarise data distributions.
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
-meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
+meta$activity %>%
+  table() %>%
+  barplot(xlab = "Disease Activity")
 ```
 
 #### Histogram
@@ -283,7 +277,9 @@ ggplot2 is a popular and powerful plotting package.
 ```{r}
 #| fig-width: 8
 #| fig-height: 3
-ggplot(meta) + geom_bar(aes(y = diagnosis, fill = active)) + theme_bw()
+ggplot(meta) +
+  geom_bar(aes(y = diagnosis, fill = active)) +
+  theme_bw()
 ```
 
 #### Histogram
@@ -291,8 +287,8 @@ ggplot(meta) + geom_bar(aes(y = diagnosis, fill = active)) + theme_bw()
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
-ggplot(meta) + 
-  geom_histogram(aes(age_years), binwidth = 1) + 
+ggplot(meta) +
+  geom_histogram(aes(age_years), binwidth = 1) +
   facet_wrap(~case_control, ncol = 1) +
   theme_minimal()
 ```
@@ -318,10 +314,10 @@ library(patchwork)
 plot_list <- list()
 
 # age boxplot
-plot_list$box <- meta %>% 
+plot_list$box <- meta %>%
   ggplot(aes(y = case_control, x = age_years)) +
   geom_boxplot(
-    mapping = aes(fill = case_control), 
+    mapping = aes(fill = case_control),
     width = 0.15, staplewidth = 0.5, outliers = FALSE,
     position = position_nudge(y = 0.2),
     show.legend = FALSE
@@ -338,10 +334,10 @@ plot_list$pie <- meta %>%
   ggplot(aes(y = 1, fill = family_history)) +
   geom_bar(position = "stack", colour = "black") +
   scale_fill_manual(
-    values = c(fhx = "grey30", nofhx = "grey70"), 
+    values = c(fhx = "grey30", nofhx = "grey70"),
     na.value = "white", guide = "none"
   ) +
-  annotate("text", x = I(pi/8), y = I(0.25), label = "NA") +
+  annotate("text", x = I(pi / 8), y = I(0.25), label = "NA") +
   annotate("text", x = I(0.9 * pi), y = I(0.25), label = "No FHx") +
   annotate("text", x = I(1.7 * pi), y = I(0.25), label = "FHx", colour = "white") +
   labs(tag = "Family History") +
@@ -353,9 +349,9 @@ plot_list$pie <- meta %>%
 # plot_list$pie
 
 # activity barchart
-plot_list$bar <- meta %>% 
+plot_list$bar <- meta %>%
   ggplot(aes(
-    x = diagnosis, 
+    x = diagnosis,
     fill = factor(activity, c("severe", "moderate", "mild", "inactive"))
   )) +
   geom_bar(colour = "black", linewidth = 0.2) +
@@ -365,7 +361,7 @@ plot_list$bar <- meta %>%
   coord_cartesian(ylim = c(0, NA), expand = FALSE) +
   theme_classic() +
   theme(
-    plot.margin = margin(l = 20), 
+    plot.margin = margin(l = 20),
     legend.key.height = unit(1, "cm"), legend.key.width = unit(3, "mm")
   )
 
@@ -375,14 +371,13 @@ plot_list$bar <- meta %>%
 wrap_plots(
   A = plot_list$box, C = plot_list$bar,
   B = plot_list$pie, guides = "collect",
-design = 
-"AAC
+  design =
+    "AAC
  AAC
  BBC
  BBC
  BBC"
 )
-
 ```
 
 #### Resources
@@ -489,7 +484,7 @@ The `mutate` function from dplyr is great for making multiple or complex transfo
 
 ```{r}
 # this is equivalent to the previous block
-all_meta <- all_meta %>% mutate(ibd_fhx = family_history == "fhx") 
+all_meta <- all_meta %>% mutate(ibd_fhx = family_history == "fhx")
 
 # check the result again
 all_meta %>% select(ID, family_history, ibd_fhx)
@@ -509,9 +504,10 @@ You can temporarily mutate a dataframe and use the result. This is easy with pip
 #| fig-width: 6
 #| fig-height: 3
 
-all_meta %>% 
-  mutate(diagnosis = factor(diagnosis, levels = c("CD", "UC", "Other"))) %>% 
-  ggplot(aes(diagnosis, age_years)) + geom_boxplot()
+all_meta %>%
+  mutate(diagnosis = factor(diagnosis, levels = c("CD", "UC", "Other"))) %>%
+  ggplot(aes(diagnosis, age_years)) +
+  geom_boxplot()
 ```
 
 Notice this did NOT persistently modify the diagnosis variable, it is still "character" class.
@@ -528,11 +524,12 @@ class(all_meta$diagnosis) # no persistent changes, diagnosis is still character!
 #| fig-width: 6
 #| fig-height: 3
 all_meta <- all_meta %>% mutate(diagnosis = factor(diagnosis, c("CD", "UC", "Other")))
-all_meta %>% ggplot(aes(diagnosis, age_years)) + geom_boxplot()
+all_meta %>% ggplot(aes(diagnosis, age_years)) +
+  geom_boxplot()
 ```
 
 ```{r}
-class(all_meta$diagnosis) 
+class(all_meta$diagnosis)
 ```
 :::
 
@@ -582,6 +579,45 @@ all_meta <- all_meta %>% mutate(
 )
 
 # you do the same for immunosuppression_level! don't forget to check the result
+```
+
+```{r}
+#| include: false
+all_meta <- all_meta %>% mutate(
+  immunosuppression_level = factor(x = immunosuppression_level, c(
+    "none", "level0", "level1", "level2", "level3", "level4"
+  ))
+)
+```
+
+
+## Save your progress 💾
+
+Let's save the `all_meta` dataframe in three formats: Excel, CSV, and RDS, all within a folder called "processed" inside the "data" folder.
+
+First, we'll create the "processed" directory.
+
+```{r}
+output_path <- here("data", "papa2012", "processed")
+dir.create(output_path)
+```
+
+Then we write an excel file, using the `write_xlsx` function from the `writexl` package.
+
+```{r}
+write_xlsx(all_meta, here(output_path, "all_metadata.xlsx"))
+```
+
+CSV files are a common format for storing tabular data. We use the `write_csv` function from the `readr` package.
+
+```{r}
+write_csv(all_meta, here(output_path, "all_metadata.csv"))
+```
+
+RDS files are R's native format for saving single R objects. They preserve data types and structures, making them ideal for saving and loading R dataframes.
+
+```{r}
+saveRDS(all_meta, here(output_path, "all_metadata.rds"))
 ```
 
 ## Next! ⏩
