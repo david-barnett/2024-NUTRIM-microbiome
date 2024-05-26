@@ -8,10 +8,10 @@ theme:
   light: flatly
   dark: darkly
 format: html
+embed-resources: true
 code-block-border-left: true
 code-block-bg: true
 fig-align: center
-embed-resources: true
 toc: true
 toc-location: right
 toc-depth: 4
