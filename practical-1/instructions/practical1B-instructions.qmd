@@ -26,7 +26,7 @@ code-tools: true
 code-fold: false
 code-link: true
 lightbox: auto
-cache: true
+cache: false
 ---
 
 ## Intro
@@ -183,7 +183,7 @@ Looks like there are a lot of zeros!
 table(OTU00001_has_0_counts = counts$OTU_00001 == 0, useNA = "ifany")
 ```
 
-----
+------------------------------------------------------------------------
 
 Attempt the following tasks to explore further!
 
@@ -305,7 +305,7 @@ rownames(count_matrix) <- counts$sample
 ```
 
 ```{r}
-tax_matrix <- as.matrix(taxonomy)
+tax_matrix <- taxonomy %>% select(!OTU) %>% as.matrix()
 rownames(tax_matrix) <- taxonomy$OTU
 ```
 
@@ -354,17 +354,153 @@ sample_data(ps) <- meta_df
 ps
 ```
 
+## microViz 🦠👁️
+
+microViz provides tools for working with phyloseq objects.
+
+Let's take a look with some basic microViz functions.
+
+```{r}
+samdat_tbl(ps) # retrieve sample data as a tibble
+```
+
+```{r}
+# get the OTU table, or part of it
+otu_get(ps, taxa = 1:5, samples = c("132_AX", "166_AX", "102_AZ"))
+```
+
+```{r}
+# get the taxonomy table
+tt_get(ps) %>% head(3)
+```
 
 ## Build some bar charts 📊
 
+Sequencing data are compositional. The total number of reads per sample is mostly arbitrary, and so the counts should be interpreted as relative abundances instead of absolute abundances.
 
-## Discover diversity 🎉
+A simple way to visualise compositional data is as percentages, proportions of a whole.
 
+Stacked bar charts are great for this: each bar represents one sample, and we can show the abundance data as proportions, after aggregating the counts by taxonomy.
+
+```{r, message=FALSE}
+#| fig-width: 8
+#| fig-height: 2
+ps %>% tax_fix() %>% comp_barplot("Phylum", n_taxa = 4, label = NULL)
+```
+
+This plot is aggregated into phyla, which is easy to read, and provides basic information.
+
+We see that most samples contain a mixture of *Firmicutes* and *Bacteroidetes*, but some appear to be dominated by *Proteobacteria* instead.
+
+::: {.callout-warning collapse="true"}
+### Beware Fickle Phyla!
+
+Beware, phylum names have changed recently!
+
+-   *Actinobacteria* is now *Actinomycetota*
+-   *Bacteroidetes* is now *Bacteroidota*
+-   *Proteobacteria* is now *Pseudomonadota* (!)
+-   *Firmicutes* is now *Bacillota* (!!)
+
+In all prior research, you will see the original names, but in coming years, the new names will be increasingly adopted.
+
+The best source for checking/searching official and alternative names is probably [LPSN at bacterio.net](https://www.bacterio.net/){target="_blank"}
+:::
+
+```{r, message=FALSE}
+#| fig-width: 8
+#| fig-height: 4
+ps %>% tax_fix() %>% comp_barplot("Genus", n_taxa = 11, merge_other = F, label = NULL)
+```
+
+This plot is aggregated into genera, which provides more detail, but is harder to read, and we cannot give every genus a distinct colour.
+
+We see that many samples contain a relatively large proportion of *Bacteroides* or *Faecalibacterium* but there is quite some further variation!
+
+## Discover diversity 🌳🌲🌴
+
+As a last task for this introductory session, we will calculate and visualise alpha diversity.
+
+We will calculate Shannon diversity at the level of Genus. 
+
+-   The Shannon index is a commonly used diversity measure, with this formula: $H = -\sum_{i=1}^Np_i\ln p_i$
+-   Shannon index is often is denoted with $H$, and here $p$ denotes proportion of the $i$'th taxon.
+
+::: {.callout-note collapse="true"}
+### Explanation of the Shannon index formula
+
+-   For each taxon $i$, you multiply its proportional abundance $p_i$ by the natural log of that proportion $\ln p_i$, and sum those values.
+-   Try it out for yourself to convince yourself you get larger (negative) values for higher proportions.
+-   The highest value you can achieve with $N$ taxa occurs with equal proportions
+-   e.g. with 20 taxa, maximum diversity occurs if each has a proportion of 5%
+-   Lastly, you change the sign of the result to a positive number, for ease of interpretation
+-   This just makes more intuitive sense: as higher positive numbers indicates higher diversity.
+:::
+
+We will also compute a exponentiated version, the effective number of genera, or effective Shannon index.
+
+
+::: {.callout-note collapse="true"}
+### Explanation of the Effective Shannon Diversity
+
+The exponent of the Shannon index $e^H$ represents the number of taxa (genera) that would be present in an evenly abundant ecosystem with the same Shannon index.
+
+-   The numeric value of the Shannon index itself has no intuitive meaning.
+-   You can compare them, but can't easily interpret any one number.
+-   So, the concept of "effective numbers" of taxa is useful here.
+-   If your original ecosystem was actually perfectly even, then $e^H = N$
+-   Where N is the observed richness
+-   The more uneven an ecosystem, the further $e^H$ will be from $N$
+
+:::
+
+```{r}
+ps_alpha <- ps %>% 
+  tax_fix() %>%
+  ps_calc_diversity(index = "shannon", rank = "Genus", varname = "Shannon_Genus") %>% 
+  ps_mutate(Effective_Shannon_Genus = exp(Shannon_Genus))
+
+ps_alpha
+```
+
+The new genus-level Shannon diversity variables are stored in the sample data slot of `ps_alpha`
+
+```{r}
+ps_alpha %>% samdat_tbl() %>% select(sample, Shannon_Genus, Effective_Shannon_Genus)
+```
+
+```{r, fig.width=6, out.width="70%"}
+ps_alpha %>% samdat_tbl() %>% pull(Shannon_Genus) %>% hist(main = "Shannon Diversity, Genus")
+```
+
+```{r, fig.width=6, out.width="70%"}
+ps_alpha %>% samdat_tbl() %>% pull(Effective_Shannon_Genus) %>% hist(main = "Effective no. genera")
+```
+
+
+### Interpreting diversity
+
+Now each sample is labelled with the effective Shannon diversity of genera ($e^H$) - do you see a relationship to sample composition?
+
+```{r, message=FALSE, fig.height=11, fig.width=6, out.width="70%"}
+#| fig-align: "center"
+#| code-fold: true
+ps_alpha %>% 
+  ps_arrange(Effective_Shannon_Genus) %>% 
+  ps_mutate(short_shannon = formatC(Effective_Shannon_Genus, digits = 2, format = "f")) %>% 
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 19, merge_other = FALSE, 
+    sample_order = "asis", label = "short_shannon"
+  ) +
+  coord_flip()
+```
 
 
 ## Next! ⏩
 
--   Click here: LINK TO NEXT PAGE
+- Its time to stop exploring and take a break. 
+- In the next lecture you will learn more about the main approaches for microbiota data analysis.
+- In the next practical session, we will come back to these data with a plan, an analysis plan!
 
 ## Session info
 
