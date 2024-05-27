@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.4.554">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="David Barnett">
-<meta name="dcterms.date" content="2024-05-26">
+<meta name="dcterms.date" content="2024-05-27">
 <title>Practical 1B - microbiota data</title>
 <style>
 code{white-space: pre-wrap;}
@@ -3103,8 +3103,17 @@ font-family: inherit;
   <li><a href="#otu-count-table" id="toc-otu-count-table" class="nav-link" data-scroll-target="#otu-count-table"><span class="header-section-number">4.2</span> OTU count table</a></li>
   </ul>
 </li>
-  <li><a href="#next" id="toc-next" class="nav-link" data-scroll-target="#next"><span class="header-section-number">5</span> Next! ⏩</a></li>
-  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="header-section-number">6</span> Session info</a></li>
+  <li>
+<a href="#assemble-a-phyloseq" id="toc-assemble-a-phyloseq" class="nav-link" data-scroll-target="#assemble-a-phyloseq"><span class="header-section-number">5</span> Assemble a phyloseq 🛠️</a>
+  <ul>
+<li><a href="#otu-counts-taxonomy" id="toc-otu-counts-taxonomy" class="nav-link" data-scroll-target="#otu-counts-taxonomy"><span class="header-section-number">5.1</span> OTU counts + taxonomy</a></li>
+  <li><a href="#adding-sample-metadata" id="toc-adding-sample-metadata" class="nav-link" data-scroll-target="#adding-sample-metadata"><span class="header-section-number">5.2</span> Adding sample metadata</a></li>
+  </ul>
+</li>
+  <li><a href="#build-some-bar-charts" id="toc-build-some-bar-charts" class="nav-link" data-scroll-target="#build-some-bar-charts"><span class="header-section-number">6</span> Build some bar charts 📊</a></li>
+  <li><a href="#discover-diversity" id="toc-discover-diversity" class="nav-link" data-scroll-target="#discover-diversity"><span class="header-section-number">7</span> Discover diversity 🎉</a></li>
+  <li><a href="#next" id="toc-next" class="nav-link" data-scroll-target="#next"><span class="header-section-number">8</span> Next! ⏩</a></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="header-section-number">9</span> Session info</a></li>
   </ul></nav>
 </div>
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -3126,7 +3135,7 @@ font-family: inherit;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 26, 2024</p>
+      <p class="date">May 27, 2024</p>
     </div>
   </div>
   
@@ -3458,6 +3467,7 @@ FALSE  TRUE
    59    32 </code></pre>
 </div>
 </div>
+<hr>
 <p>Attempt the following tasks to explore further!</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist">
@@ -3501,8 +3511,8 @@ SOLUTION:
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>Use <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> to temporarily create a new log-transformed variable called log_OTU1 and plot its distribution.</p>
-<p><em>Note that because you cannot log-transform 0s you will need to add 1 to all values first, i.e.</em> <code>log10(OTU_00001 + 1)</code></p>
+<p>Use <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> to create a temporary log-transformed variable <code>log_OTU1</code> and plot its distribution.</p>
+<p><em>Note that you can’t do log(0), so you will need to add 1 to all values first, i.e.</em> <code>log10(OTU_00001 + 1)</code></p>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -3564,6 +3574,7 @@ SOLUTION:
 </div>
 </div>
 <div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<p>But what type of bacteria do these amplicon sequences belong to?</p>
 <p>Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.</p>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
@@ -3627,14 +3638,134 @@ SOLUTION:
 </div>
 </div>
 </div>
-</section></section><section id="next" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="next">
-<span class="header-section-number">5</span> Next! ⏩</h2>
+</section></section><section id="assemble-a-phyloseq" class="level2" data-number="5"><h2 data-number="5" class="anchored" data-anchor-id="assemble-a-phyloseq">
+<span class="header-section-number">5</span> Assemble a phyloseq 🛠️</h2>
+<p>So far we have not used any R packages specialised for microbiome data.</p>
+<p>Let’s do so, because it will make our next tasks a lot easier!</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://dx.plos.org/10.1371/journal.pone.0061217">phyloseq</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://david-barnett.github.io/microViz">microViz</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>microViz version 0.12.1 - Copyright (C) 2021-2024 David Barnett
+! Website: https://david-barnett.github.io/microViz
+✔ Useful?  For citation details, run: `citation(&quot;microViz&quot;)`
+✖ Silence? `suppressPackageStartupMessages(library(microViz))`</code></pre>
+</div>
+</div>
+<p>We will start by combining our three dataframes into one <code>phyloseq</code> object</p>
+<section id="otu-counts-taxonomy" class="level3" data-number="5.1"><h3 data-number="5.1" class="anchored" data-anchor-id="otu-counts-taxonomy">
+<span class="header-section-number">5.1</span> OTU counts + taxonomy</h3>
+<p>phyloseq uses row or column names to match OTUs across the count and taxonomy tables.</p>
+<p>In addition, the taxonomy table must contain only taxonomic ranks in descending order, and the count table must be converted to a numeric matrix.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">count_matrix</span> <span class="op">&lt;-</span> <span class="va">counts</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sample</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">count_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">counts</span><span class="op">$</span><span class="va">sample</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tax_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">taxonomy</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">tax_matrix</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">taxonomy</span><span class="op">$</span><span class="va">OTU</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ps</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/phyloseq.html">phyloseq</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/otu_table-methods.html">otu_table</a></span><span class="op">(</span><span class="va">count_matrix</span>, taxa_are_rows <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/tax_table-methods.html">tax_table</a></span><span class="op">(</span><span class="va">tax_matrix</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ps</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 36349 taxa and 91 samples ]
+tax_table()   Taxonomy Table:    [ 36349 taxa by 7 taxonomic ranks ]</code></pre>
+</div>
+</div>
+</section><section id="adding-sample-metadata" class="level3" data-number="5.2"><h3 data-number="5.2" class="anchored" data-anchor-id="adding-sample-metadata">
+<span class="header-section-number">5.2</span> Adding sample metadata</h3>
+<p>phyloseq uses row names to match samples (across the OTU count table and the sample metadata).</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/sample_names-methods.html">sample_names</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;099_AX&quot; &quot;199_AX&quot; &quot;062_BZ&quot; &quot;194_AZ&quot; &quot;166_AX&quot; &quot;219_AX&quot;</code></pre>
+</div>
+</div>
+<p>Notice that in the phyloseq object the sample names have underscores, but they have hyphens in the sample metadata.</p>
+<div class="cell">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">meta</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 90 × 17
+   ID    sample case_control diagnosis activity active   gender ethnicity
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;        &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt;    &lt;chr&gt;  &lt;chr&gt;    
+ 1 099A  099-AX Case         UC        severe   active   female White    
+ 2 199A  199-AX Control      Other     control  control  female Other    
+ 3 062B  062-BZ Case         CD        mild     active   male   White    
+ 4 194A  194-AZ Case         UC        mild     active   male   White    
+ 5 166A  166-AX Case         UC        severe   active   female Black    
+ 6 219A  219-AX Case         UC        inactive inactive female &lt;NA&gt;     
+ 7 132A  132-AX Case         CD        mild     active   female White    
+ 8 026A  026-AX Case         UC        mild     active   male   White    
+ 9 102A  102-AZ Control      Other     control  control  male   White    
+10 140A  140-AX Control      Other     control  control  female White    
+# ℹ 80 more rows
+# ℹ 9 more variables: family_history &lt;chr&gt;, age_years &lt;dbl&gt;,
+#   immunosuppression_level &lt;fct&gt;, medication &lt;chr&gt;, ibd_fhx &lt;lgl&gt;, abx &lt;lgl&gt;,
+#   steroids &lt;lgl&gt;, imsp_other &lt;lgl&gt;, imsp_any &lt;lgl&gt;</code></pre>
+</div>
+</div>
+<p>We can fix that with the <code>stringr</code> package <code>str_replace</code> function.</p>
+<div class="cell">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">meta</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="va">meta</span><span class="op">$</span><span class="va">sample</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">&quot;-&quot;</span>, replacement <span class="op">=</span> <span class="st">&quot;_&quot;</span><span class="op">)</span></span>
+<span><span class="va">meta</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 90 × 17
+   ID    sample case_control diagnosis activity active   gender ethnicity
+   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;        &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt;    &lt;chr&gt;  &lt;chr&gt;    
+ 1 099A  099_AX Case         UC        severe   active   female White    
+ 2 199A  199_AX Control      Other     control  control  female Other    
+ 3 062B  062_BZ Case         CD        mild     active   male   White    
+ 4 194A  194_AZ Case         UC        mild     active   male   White    
+ 5 166A  166_AX Case         UC        severe   active   female Black    
+ 6 219A  219_AX Case         UC        inactive inactive female &lt;NA&gt;     
+ 7 132A  132_AX Case         CD        mild     active   female White    
+ 8 026A  026_AX Case         UC        mild     active   male   White    
+ 9 102A  102_AZ Control      Other     control  control  male   White    
+10 140A  140_AX Control      Other     control  control  female White    
+# ℹ 80 more rows
+# ℹ 9 more variables: family_history &lt;chr&gt;, age_years &lt;dbl&gt;,
+#   immunosuppression_level &lt;fct&gt;, medication &lt;chr&gt;, ibd_fhx &lt;lgl&gt;, abx &lt;lgl&gt;,
+#   steroids &lt;lgl&gt;, imsp_other &lt;lgl&gt;, imsp_any &lt;lgl&gt;</code></pre>
+</div>
+</div>
+<p>Now make them row names, check they all match, and add the metadata to the phyloseq object.</p>
+<div class="cell">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">meta_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">meta</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">meta_df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">meta</span><span class="op">$</span><span class="va">sample</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">meta_df</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/sample_names-methods.html">sample_names</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/phyloseq/man/sample_data-methods.html">sample_data</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">meta_df</span></span>
+<span><span class="va">ps</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 36349 taxa and 90 samples ]
+sample_data() Sample Data:       [ 90 samples by 17 sample variables ]
+tax_table()   Taxonomy Table:    [ 36349 taxa by 7 taxonomic ranks ]</code></pre>
+</div>
+</div>
+</section></section><section id="build-some-bar-charts" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="build-some-bar-charts">
+<span class="header-section-number">6</span> Build some bar charts 📊</h2>
+</section><section id="discover-diversity" class="level2" data-number="7"><h2 data-number="7" class="anchored" data-anchor-id="discover-diversity">
+<span class="header-section-number">7</span> Discover diversity 🎉</h2>
+</section><section id="next" class="level2" data-number="8"><h2 data-number="8" class="anchored" data-anchor-id="next">
+<span class="header-section-number">8</span> Next! ⏩</h2>
 <ul>
 <li>Click here: LINK TO NEXT PAGE</li>
-</ul></section><section id="session-info" class="level2" data-number="6"><h2 data-number="6" class="anchored" data-anchor-id="session-info">
-<span class="header-section-number">6</span> Session info</h2>
+</ul></section><section id="session-info" class="level2" data-number="9"><h2 data-number="9" class="anchored" data-anchor-id="session-info">
+<span class="header-section-number">9</span> Session info</h2>
 <details><div class="cell">
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">sessioninfo</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">sessioninfo</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────
  setting  value
@@ -3646,64 +3777,97 @@ SOLUTION:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       Europe/Amsterdam
- date     2024-05-26
- pandoc   3.1.11 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/aarch64/ (via rmarkdown)
+ date     2024-05-27
+ pandoc   3.1.1 @ /Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package     * version date (UTC) lib source
- bit           4.0.5   2022-11-15 [1] CRAN (R 4.4.0)
- bit64         4.0.5   2020-08-30 [1] CRAN (R 4.4.0)
- cellranger    1.1.0   2016-07-27 [1] CRAN (R 4.4.0)
- cli           3.6.2   2023-12-11 [1] CRAN (R 4.4.0)
- colorspace    2.1-0   2023-01-23 [1] CRAN (R 4.4.0)
- crayon        1.5.2   2022-09-29 [1] CRAN (R 4.4.0)
- digest        0.6.35  2024-03-11 [1] CRAN (R 4.4.0)
- dplyr       * 1.1.4   2023-11-17 [1] CRAN (R 4.4.0)
- evaluate      0.23    2023-11-01 [1] CRAN (R 4.4.0)
- fansi         1.0.6   2023-12-08 [1] CRAN (R 4.4.0)
- farver        2.1.2   2024-05-13 [1] CRAN (R 4.4.0)
- fastmap       1.2.0   2024-05-15 [1] CRAN (R 4.4.0)
- forcats     * 1.0.0   2023-01-29 [1] CRAN (R 4.4.0)
- generics      0.1.3   2022-07-05 [1] CRAN (R 4.4.0)
- ggplot2     * 3.5.1   2024-04-23 [1] CRAN (R 4.4.0)
- glue          1.7.0   2024-01-09 [1] CRAN (R 4.4.0)
- gtable        0.3.5   2024-04-22 [1] CRAN (R 4.4.0)
- here        * 1.0.1   2020-12-13 [1] CRAN (R 4.4.0)
- hms           1.1.3   2023-03-21 [1] CRAN (R 4.4.0)
- htmltools     0.5.8.1 2024-04-04 [1] CRAN (R 4.4.0)
- jsonlite      1.8.8   2023-12-04 [1] CRAN (R 4.4.0)
- knitr         1.46    2024-04-06 [1] CRAN (R 4.4.0)
- labeling      0.4.3   2023-08-29 [1] CRAN (R 4.4.0)
- lifecycle     1.0.4   2023-11-07 [1] CRAN (R 4.4.0)
- lubridate   * 1.9.3   2023-09-27 [1] CRAN (R 4.4.0)
- magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.4.0)
- munsell       0.5.1   2024-04-01 [1] CRAN (R 4.4.0)
- pillar        1.9.0   2023-03-22 [1] CRAN (R 4.4.0)
- pkgconfig     2.0.3   2019-09-22 [1] CRAN (R 4.4.0)
- purrr       * 1.0.2   2023-08-10 [1] CRAN (R 4.4.0)
- R6            2.5.1   2021-08-19 [1] CRAN (R 4.4.0)
- readr       * 2.1.5   2024-01-10 [1] CRAN (R 4.4.0)
- readxl      * 1.4.3   2023-07-06 [1] CRAN (R 4.4.0)
- rlang         1.1.3   2024-01-10 [1] CRAN (R 4.4.0)
- rmarkdown     2.27    2024-05-17 [1] CRAN (R 4.4.0)
- rprojroot     2.0.4   2023-11-05 [1] CRAN (R 4.4.0)
- rstudioapi    0.16.0  2024-03-24 [1] CRAN (R 4.4.0)
- scales        1.3.0   2023-11-28 [1] CRAN (R 4.4.0)
- sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.4.0)
- stringi       1.8.4   2024-05-06 [1] CRAN (R 4.4.0)
- stringr     * 1.5.1   2023-11-14 [1] CRAN (R 4.4.0)
- tibble      * 3.2.1   2023-03-20 [1] CRAN (R 4.4.0)
- tidyr       * 1.3.1   2024-01-24 [1] CRAN (R 4.4.0)
- tidyselect    1.2.1   2024-03-11 [1] CRAN (R 4.4.0)
- tidyverse   * 2.0.0   2023-02-22 [1] CRAN (R 4.4.0)
- timechange    0.3.0   2024-01-18 [1] CRAN (R 4.4.0)
- tzdb          0.4.0   2023-05-12 [1] CRAN (R 4.4.0)
- utf8          1.2.4   2023-10-22 [1] CRAN (R 4.4.0)
- vctrs         0.6.5   2023-12-01 [1] CRAN (R 4.4.0)
- vroom         1.6.5   2023-12-05 [1] CRAN (R 4.4.0)
- withr         3.0.0   2024-01-16 [1] CRAN (R 4.4.0)
- xfun          0.44    2024-05-15 [1] CRAN (R 4.4.0)
- yaml          2.3.8   2023-12-11 [1] CRAN (R 4.4.0)
+ package          * version  date (UTC) lib source
+ ade4               1.7-22   2023-02-06 [1] CRAN (R 4.4.0)
+ ape                5.8      2024-04-11 [1] CRAN (R 4.4.0)
+ Biobase            2.64.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ BiocGenerics       0.50.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ biomformat         1.32.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ Biostrings         2.72.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ cellranger         1.1.0    2016-07-27 [1] CRAN (R 4.4.0)
+ cli                3.6.2    2023-12-11 [1] CRAN (R 4.4.0)
+ cluster            2.1.6    2023-12-01 [1] CRAN (R 4.4.0)
+ codetools          0.2-20   2024-03-31 [1] CRAN (R 4.4.0)
+ colorspace         2.1-0    2023-01-23 [1] CRAN (R 4.4.0)
+ crayon             1.5.2    2022-09-29 [1] CRAN (R 4.4.0)
+ data.table         1.15.4   2024-03-30 [1] CRAN (R 4.4.0)
+ digest             0.6.35   2024-03-11 [1] CRAN (R 4.4.0)
+ dplyr            * 1.1.4    2023-11-17 [1] CRAN (R 4.4.0)
+ evaluate           0.23     2023-11-01 [1] CRAN (R 4.4.0)
+ fansi              1.0.6    2023-12-08 [1] CRAN (R 4.4.0)
+ fastmap            1.2.0    2024-05-15 [1] CRAN (R 4.4.0)
+ forcats          * 1.0.0    2023-01-29 [1] CRAN (R 4.4.0)
+ foreach            1.5.2    2022-02-02 [1] CRAN (R 4.4.0)
+ generics           0.1.3    2022-07-05 [1] CRAN (R 4.4.0)
+ GenomeInfoDb       1.40.1   2024-05-24 [1] Bioconductor 3.19 (R 4.4.0)
+ GenomeInfoDbData   1.2.12   2024-05-26 [1] Bioconductor
+ ggplot2          * 3.5.1    2024-04-23 [1] CRAN (R 4.4.0)
+ glue               1.7.0    2024-01-09 [1] CRAN (R 4.4.0)
+ gtable             0.3.5    2024-04-22 [1] CRAN (R 4.4.0)
+ here             * 1.0.1    2020-12-13 [1] CRAN (R 4.4.0)
+ hms                1.1.3    2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools          0.5.8.1  2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets        1.6.4    2023-12-06 [1] CRAN (R 4.4.0)
+ httr               1.4.7    2023-08-15 [1] CRAN (R 4.4.0)
+ igraph             2.0.3    2024-03-13 [1] CRAN (R 4.4.0)
+ IRanges            2.38.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ iterators          1.0.14   2022-02-05 [1] CRAN (R 4.4.0)
+ jsonlite           1.8.8    2023-12-04 [1] CRAN (R 4.4.0)
+ knitr              1.46     2024-04-06 [1] CRAN (R 4.4.0)
+ lattice            0.22-6   2024-03-20 [1] CRAN (R 4.4.0)
+ lifecycle          1.0.4    2023-11-07 [1] CRAN (R 4.4.0)
+ lubridate        * 1.9.3    2023-09-27 [1] CRAN (R 4.4.0)
+ magrittr           2.0.3    2022-03-30 [1] CRAN (R 4.4.0)
+ MASS               7.3-60.2 2024-04-24 [1] local
+ Matrix             1.7-0    2024-03-22 [1] CRAN (R 4.4.0)
+ mgcv               1.9-1    2023-12-21 [1] CRAN (R 4.4.0)
+ microViz         * 0.12.1   2024-05-03 [1] https://david-barnett.r-universe.dev (R 4.4.0)
+ multtest           2.60.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ munsell            0.5.1    2024-04-01 [1] CRAN (R 4.4.0)
+ nlme               3.1-164  2023-11-27 [1] CRAN (R 4.4.0)
+ permute            0.9-7    2022-01-27 [1] CRAN (R 4.4.0)
+ phyloseq         * 1.48.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ pillar             1.9.0    2023-03-22 [1] CRAN (R 4.4.0)
+ pkgconfig          2.0.3    2019-09-22 [1] CRAN (R 4.4.0)
+ plyr               1.8.9    2023-10-02 [1] CRAN (R 4.4.0)
+ purrr            * 1.0.2    2023-08-10 [1] CRAN (R 4.4.0)
+ R6                 2.5.1    2021-08-19 [1] CRAN (R 4.4.0)
+ Rcpp               1.0.12   2024-01-09 [1] CRAN (R 4.4.0)
+ readr            * 2.1.5    2024-01-10 [1] CRAN (R 4.4.0)
+ readxl           * 1.4.3    2023-07-06 [1] CRAN (R 4.4.0)
+ reshape2           1.4.4    2020-04-09 [1] CRAN (R 4.4.0)
+ rhdf5              2.48.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ rhdf5filters       1.16.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ Rhdf5lib           1.26.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ rlang              1.1.3    2024-01-10 [1] CRAN (R 4.4.0)
+ rmarkdown          2.27     2024-05-17 [1] CRAN (R 4.4.0)
+ rprojroot          2.0.4    2023-11-05 [1] CRAN (R 4.4.0)
+ rstudioapi         0.16.0   2024-03-24 [1] CRAN (R 4.4.0)
+ S4Vectors          0.42.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ scales             1.3.0    2023-11-28 [1] CRAN (R 4.4.0)
+ sessioninfo        1.2.2    2021-12-06 [1] CRAN (R 4.4.0)
+ stringi            1.8.4    2024-05-06 [1] CRAN (R 4.4.0)
+ stringr          * 1.5.1    2023-11-14 [1] CRAN (R 4.4.0)
+ survival           3.5-8    2024-02-14 [1] CRAN (R 4.4.0)
+ tibble           * 3.2.1    2023-03-20 [1] CRAN (R 4.4.0)
+ tidyr            * 1.3.1    2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect         1.2.1    2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse        * 2.0.0    2023-02-22 [1] CRAN (R 4.4.0)
+ timechange         0.3.0    2024-01-18 [1] CRAN (R 4.4.0)
+ tzdb               0.4.0    2023-05-12 [1] CRAN (R 4.4.0)
+ UCSC.utils         1.0.0    2024-05-06 [1] Bioconductor 3.19 (R 4.4.0)
+ utf8               1.2.4    2023-10-22 [1] CRAN (R 4.4.0)
+ vctrs              0.6.5    2023-12-01 [1] CRAN (R 4.4.0)
+ vegan              2.6-6.1  2024-05-21 [1] CRAN (R 4.4.0)
+ withr              3.0.0    2024-01-16 [1] CRAN (R 4.4.0)
+ xfun               0.44     2024-05-15 [1] CRAN (R 4.4.0)
+ XVector            0.44.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
+ yaml               2.3.8    2023-12-11 [1] CRAN (R 4.4.0)
+ zlibbioc           1.50.0   2024-04-30 [1] Bioconductor 3.19 (R 4.4.0)
 
  [1] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
 
@@ -4315,303 +4479,387 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="sourceCode" id="cb37" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Practical 1B - microbiota data&quot;</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;NUTRIM microbiome &amp; metabolome workshop&quot;</span></span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> David Barnett</span></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="an">keep-md:</span><span class="co"> false</span></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="an">theme:</span><span class="co"> </span></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">  light: flatly</span></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">  dark: darkly</span></span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="an">embed-resources:</span><span class="co"> true</span></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="an">code-block-border-left:</span><span class="co"> true</span></span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="an">code-block-bg:</span><span class="co"> true</span></span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
-<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> right</span></span>
-<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 4</span></span>
-<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="an">toc-expand:</span><span class="co"> 3</span></span>
-<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="an">number-sections:</span><span class="co"> true</span></span>
-<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="an">number-depth:</span><span class="co"> 3</span></span>
-<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="an">fig-align:</span><span class="co"> center</span></span>
-<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="an">fig-dpi:</span><span class="co"> 300</span></span>
-<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a><span class="an">fig-width:</span><span class="co"> 7.5</span></span>
-<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a><span class="an">fig-height:</span><span class="co"> 5</span></span>
-<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a><span class="an">fig-responsive:</span><span class="co"> true</span></span>
-<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
-<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> false</span></span>
-<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a><span class="an">code-link:</span><span class="co"> true</span></span>
-<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a><span class="an">lightbox:</span><span class="co"> auto</span></span>
-<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a><span class="an">cache:</span><span class="co"> false</span></span>
-<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Intro</span></span>
-<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>Now we&#39;re going to look at the microbiota data.</span>
-<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot;}</span>
-<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### A note on sequence data processing</span></span>
-<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>These data have already been processed into a table, counts of how often each sequence occurs in each sample.</span>
-<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>It started as huge fastq text files, full of As, Cs, Ts and Gs, but we will not practice sequence data processing today, because it takes quite a long time to run.</span>
-<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>If you generate your data with us at Medical Microbiology, we will run the latest processing approaches on our computational infrastructure and provide you with the processed data.</span>
-<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>Nowadays we do amplicon sequencing with Illumina MiSeq, HiSeq, or similar technologies, and denoise the output with DADA2 to produce ASV count tables.</span>
-<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>The example data we will use are a little older. The amplicons were sequenced with 454 pyrosequencing and clustered into OTUs, but the core principles of analysis remain the same.</span>
-<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a>And as you will see later today, the same approaches can also be applied to taxonomic abundance count tables obtained from shotgun metagenomic sequencing.</span>
-<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a>First we&#39;re going to use the R skills we practised in part A to inspect this data.</span>
-<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### SOLUTION: (read me?)</span></span>
-<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>In this practical, solution blocks like this are available...</span>
-<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>But try and write code independently before looking at the answer!</span>
-<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Attempting to recall knowledge or solve problems is proven to enhance learning.</span>
-<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>So don&#39;t look unless you&#39;re really stuck! 💪</span>
-<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a>After that, we&#39;ll take a look at some specialist R packages for microbiome analysis.</span>
-<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning goals 💪</span></span>
-<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">blah</span><span class="co">](#blah)</span></span>
-<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load R packages 📦</span></span>
-<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-76"><a href="#cb37-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-77"><a href="#cb37-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-81"><a href="#cb37-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-82"><a href="#cb37-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Read and inspect data 🔍</span></span>
-<span id="cb37-83"><a href="#cb37-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a>Read the metadata file from part 1A, using the RDS version.</span>
-<span id="cb37-85"><a href="#cb37-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/processed/all_metadata.rds&quot;</span>))</span>
-<span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-92"><a href="#cb37-92" aria-hidden="true" tabindex="-1"></a>Read the count table: this is stored as a TSV (tab-separated variables) formatted text file.</span>
-<span id="cb37-93"><a href="#cb37-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-96"><a href="#cb37-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-97"><a href="#cb37-97" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/papa2012_OTU_count_table.txt&quot;</span>))</span>
-<span id="cb37-98"><a href="#cb37-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-99"><a href="#cb37-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-102"><a href="#cb37-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-103"><a href="#cb37-103" aria-hidden="true" tabindex="-1"></a>counts</span>
-<span id="cb37-104"><a href="#cb37-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-105"><a href="#cb37-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-106"><a href="#cb37-106" aria-hidden="true" tabindex="-1"></a>**Your first challenge:** read the taxonomy table stored in <span class="in">`&quot;data/papa2012/papa2012_taxonomy_table.txt&quot;`</span> (call the object <span class="in">`taxonomy`</span>)</span>
-<span id="cb37-107"><a href="#cb37-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-108"><a href="#cb37-108" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-109"><a href="#cb37-109" aria-hidden="true" tabindex="-1"></a><span class="fu">#### SOLUTION:</span></span>
-<span id="cb37-110"><a href="#cb37-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-113"><a href="#cb37-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-114"><a href="#cb37-114" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/papa2012_taxonomy_table.txt&quot;</span>))</span>
-<span id="cb37-115"><a href="#cb37-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-116"><a href="#cb37-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-119"><a href="#cb37-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-120"><a href="#cb37-120" aria-hidden="true" tabindex="-1"></a>taxonomy</span>
-<span id="cb37-121"><a href="#cb37-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-122"><a href="#cb37-122" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-123"><a href="#cb37-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-124"><a href="#cb37-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Taxonomy table</span></span>
-<span id="cb37-125"><a href="#cb37-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a>Now practice inspecting the taxonomy table by completing the following tasks:</span>
-<span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 1</span></span>
-<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a>Check how many distinct genera there are. Tip: use <span class="in">`unique()`</span> and <span class="in">`length()`</span></span>
-<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a>taxonomy<span class="sc">$</span>Genus <span class="sc">%&gt;%</span></span>
-<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>()</span>
-<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-143"><a href="#cb37-143" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 2</span></span>
-<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a>How many OTUs are there in each Phylum? Tip: use <span class="in">`count()`</span> or <span class="in">`table()`</span></span>
-<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span> <span class="fu">count</span>(Phylum)</span>
-<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a>taxonomy<span class="sc">$</span>Phylum <span class="sc">%&gt;%</span> <span class="fu">table</span>(<span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 3</span></span>
-<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a>What genera are in the phylum Actinobacteria? Tip: use <span class="in">`filter()`</span></span>
-<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-174"><a href="#cb37-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
-<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Phylum <span class="sc">==</span> <span class="st">&quot;Actinobacteria&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Genus, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a>Or for just their names:</span>
-<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
-<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Phylum <span class="sc">==</span> <span class="st">&quot;Actinobacteria&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(Genus) <span class="sc">%&gt;%</span></span>
-<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
-<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a><span class="fu">### OTU count table</span></span>
-<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a>First let&#39;s plot a histogram of OTU number 1.</span>
-<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
-<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;% ggplot(aes(OTU_00001)) +</span></span>
-<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(binwidth = 5)</span></span>
-<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a>Looks like there are a lot of zeros!</span>
-<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">OTU00001_has_0_counts =</span> counts<span class="sc">$</span>OTU_00001 <span class="sc">==</span> <span class="dv">0</span>, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
-<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a>Attempt the following tasks to explore further!</span>
-<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
-<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 1</span></span>
-<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`filter()`</span> to plot only the non-zero entries for OTU 1.</span>
-<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a>Try also using <span class="in">`+ scale_x_log10()`</span> to transform the plot axis scale.</span>
-<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
-<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
-<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(OTU_00001 != 0) %&gt;%</span></span>
-<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(OTU_00001)) +</span></span>
-<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(bins = 30) +</span></span>
-<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_x_log10()</span></span>
-<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 2</span></span>
-<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`mutate()`</span> to temporarily create a new log-transformed variable called log_OTU1 and plot its distribution.</span>
-<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>*Note that because you cannot log-transform 0s you will need to add 1 to all values first, i.e.* <span class="in">`log10(OTU_00001 + 1)`</span></span>
-<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
-<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
-<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU1 = log10(OTU_00001 + 1)) %&gt;%</span></span>
-<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(log_OTU1)) +</span></span>
-<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(bins = 30)</span></span>
-<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 3</span></span>
-<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a>Plot OTU 1 against OTU 2 as a scatter plot using <span class="in">`geom_point`</span>.</span>
-<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a>Remember to add 1 before log10 transformation of both variables.</span>
-<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=4, fig.height=4}</span></span>
-<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a><span class="in">#| out-width: &quot;50%&quot;</span></span>
-<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-align: &quot;center&quot;</span></span>
-<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
-<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU1 = log10(OTU_00001 + 1)) %&gt;%</span></span>
-<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU2 = log10(OTU_00002 + 1)) %&gt;%</span></span>
-<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(x = log_OTU1, y = log_OTU2)) +</span></span>
-<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
-<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 4</span></span>
-<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a>Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.</span>
-<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span> <span class="fu">filter</span>(OTU <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;OTU_00001&quot;</span>, <span class="st">&quot;OTU_00002&quot;</span>))</span>
-<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-283"><a href="#cb37-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
-<span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(OTU <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;OTU_00001&quot;</span>, <span class="st">&quot;OTU_00002&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(OTU, Phylum, Family, Genus) </span>
-<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 5</span></span>
-<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>Now make histograms and look up the taxonomy for the next thousand OTUs...</span>
-<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
-<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
-<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a>Okay, that was a joke. 🤡</span>
-<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a>It is possible to make a thousand plots, because R is very good at repetitive tasks.</span>
-<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>But, this would not be very useful, because you could not look at them all.</span>
-<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a>In the next section of this practical, we will explore smarter ways to analyse microbiota compositions.</span>
-<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next! ⏩</span></span>
-<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Click here: LINK TO NEXT PAGE</span>
-<span id="cb37-312"><a href="#cb37-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
-<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a>&lt;details&gt;</span>
-<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span>
-<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-323"><a href="#cb37-323" aria-hidden="true" tabindex="-1"></a>&lt;/details&gt;</span>
+<div class="sourceCode" id="cb54" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Practical 1B - microbiota data&quot;</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> &quot;NUTRIM microbiome &amp; metabolome workshop&quot;</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> David Barnett</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> last-modified</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="an">keep-md:</span><span class="co"> false</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="an">theme:</span><span class="co"> </span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="co">  light: flatly</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="co">  dark: darkly</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="an">embed-resources:</span><span class="co"> true</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="an">code-block-border-left:</span><span class="co"> true</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="an">code-block-bg:</span><span class="co"> true</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="an">toc-location:</span><span class="co"> right</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 4</span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="an">toc-expand:</span><span class="co"> 3</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a><span class="an">number-sections:</span><span class="co"> true</span></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a><span class="an">number-depth:</span><span class="co"> 3</span></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="an">fig-align:</span><span class="co"> center</span></span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a><span class="an">fig-dpi:</span><span class="co"> 300</span></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a><span class="an">fig-width:</span><span class="co"> 7.5</span></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="an">fig-height:</span><span class="co"> 5</span></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a><span class="an">fig-responsive:</span><span class="co"> true</span></span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> false</span></span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a><span class="an">code-link:</span><span class="co"> true</span></span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a><span class="an">lightbox:</span><span class="co"> auto</span></span>
+<span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a><span class="an">cache:</span><span class="co"> true</span></span>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-32"><a href="#cb54-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Intro</span></span>
+<span id="cb54-33"><a href="#cb54-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-34"><a href="#cb54-34" aria-hidden="true" tabindex="-1"></a>Now we&#39;re going to look at the microbiota data.</span>
+<span id="cb54-35"><a href="#cb54-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-36"><a href="#cb54-36" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot;}</span>
+<span id="cb54-37"><a href="#cb54-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### A note on sequence data processing</span></span>
+<span id="cb54-38"><a href="#cb54-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-39"><a href="#cb54-39" aria-hidden="true" tabindex="-1"></a>These data have already been processed into a table, counts of how often each sequence occurs in each sample.</span>
+<span id="cb54-40"><a href="#cb54-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-41"><a href="#cb54-41" aria-hidden="true" tabindex="-1"></a>It started as huge fastq text files, full of As, Cs, Ts and Gs, but we will not practice sequence data processing today, because it takes quite a long time to run.</span>
+<span id="cb54-42"><a href="#cb54-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-43"><a href="#cb54-43" aria-hidden="true" tabindex="-1"></a>If you generate your data with us at Medical Microbiology, we will run the latest processing approaches on our computational infrastructure and provide you with the processed data.</span>
+<span id="cb54-44"><a href="#cb54-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-45"><a href="#cb54-45" aria-hidden="true" tabindex="-1"></a>Nowadays we do amplicon sequencing with Illumina MiSeq, HiSeq, or similar technologies, and denoise the output with DADA2 to produce ASV count tables.</span>
+<span id="cb54-46"><a href="#cb54-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-47"><a href="#cb54-47" aria-hidden="true" tabindex="-1"></a>The example data we will use are a little older. The amplicons were sequenced with 454 pyrosequencing and clustered into OTUs, but the core principles of analysis remain the same.</span>
+<span id="cb54-48"><a href="#cb54-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-49"><a href="#cb54-49" aria-hidden="true" tabindex="-1"></a>And as you will see later today, the same approaches can also be applied to taxonomic abundance count tables obtained from shotgun metagenomic sequencing.</span>
+<span id="cb54-50"><a href="#cb54-50" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-51"><a href="#cb54-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-52"><a href="#cb54-52" aria-hidden="true" tabindex="-1"></a>First we&#39;re going to use the R skills we practised in part A to inspect this data.</span>
+<span id="cb54-53"><a href="#cb54-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-54"><a href="#cb54-54" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-55"><a href="#cb54-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### SOLUTION: (read me?)</span></span>
+<span id="cb54-56"><a href="#cb54-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-57"><a href="#cb54-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>In this practical, solution blocks like this are available...</span>
+<span id="cb54-58"><a href="#cb54-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-59"><a href="#cb54-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>But try and write code independently before looking at the answer!</span>
+<span id="cb54-60"><a href="#cb54-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-61"><a href="#cb54-61" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Attempting to recall knowledge or solve problems is proven to enhance learning.</span>
+<span id="cb54-62"><a href="#cb54-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-63"><a href="#cb54-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>So don&#39;t look unless you&#39;re really stuck! 💪</span>
+<span id="cb54-64"><a href="#cb54-64" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-65"><a href="#cb54-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-66"><a href="#cb54-66" aria-hidden="true" tabindex="-1"></a>After that, we&#39;ll take a look at some specialist R packages for microbiome analysis.</span>
+<span id="cb54-67"><a href="#cb54-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-68"><a href="#cb54-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning goals 💪</span></span>
+<span id="cb54-69"><a href="#cb54-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-70"><a href="#cb54-70" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="co">[</span><span class="ot">blah</span><span class="co">](#blah)</span></span>
+<span id="cb54-71"><a href="#cb54-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-72"><a href="#cb54-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load R packages 📦</span></span>
+<span id="cb54-73"><a href="#cb54-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-76"><a href="#cb54-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-77"><a href="#cb54-77" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb54-78"><a href="#cb54-78" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb54-79"><a href="#cb54-79" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb54-80"><a href="#cb54-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-81"><a href="#cb54-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-82"><a href="#cb54-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Read and inspect data 🔍</span></span>
+<span id="cb54-83"><a href="#cb54-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-84"><a href="#cb54-84" aria-hidden="true" tabindex="-1"></a>Read the metadata file from part 1A, using the RDS version.</span>
+<span id="cb54-85"><a href="#cb54-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-88"><a href="#cb54-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-89"><a href="#cb54-89" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/processed/all_metadata.rds&quot;</span>))</span>
+<span id="cb54-90"><a href="#cb54-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-91"><a href="#cb54-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-92"><a href="#cb54-92" aria-hidden="true" tabindex="-1"></a>Read the count table: this is stored as a TSV (tab-separated variables) formatted text file.</span>
+<span id="cb54-93"><a href="#cb54-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-96"><a href="#cb54-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-97"><a href="#cb54-97" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/papa2012_OTU_count_table.txt&quot;</span>))</span>
+<span id="cb54-98"><a href="#cb54-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-99"><a href="#cb54-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-102"><a href="#cb54-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-103"><a href="#cb54-103" aria-hidden="true" tabindex="-1"></a>counts</span>
+<span id="cb54-104"><a href="#cb54-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-105"><a href="#cb54-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-106"><a href="#cb54-106" aria-hidden="true" tabindex="-1"></a>**Your first challenge:** read the taxonomy table stored in <span class="in">`&quot;data/papa2012/papa2012_taxonomy_table.txt&quot;`</span> (call the object <span class="in">`taxonomy`</span>)</span>
+<span id="cb54-107"><a href="#cb54-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-108"><a href="#cb54-108" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-109"><a href="#cb54-109" aria-hidden="true" tabindex="-1"></a><span class="fu">#### SOLUTION:</span></span>
+<span id="cb54-110"><a href="#cb54-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-113"><a href="#cb54-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-114"><a href="#cb54-114" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="at">file =</span> <span class="fu">here</span>(<span class="st">&quot;data/papa2012/papa2012_taxonomy_table.txt&quot;</span>))</span>
+<span id="cb54-115"><a href="#cb54-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-116"><a href="#cb54-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-119"><a href="#cb54-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-120"><a href="#cb54-120" aria-hidden="true" tabindex="-1"></a>taxonomy</span>
+<span id="cb54-121"><a href="#cb54-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-122"><a href="#cb54-122" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-123"><a href="#cb54-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-124"><a href="#cb54-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Taxonomy table</span></span>
+<span id="cb54-125"><a href="#cb54-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-126"><a href="#cb54-126" aria-hidden="true" tabindex="-1"></a>Now practice inspecting the taxonomy table by completing the following tasks:</span>
+<span id="cb54-127"><a href="#cb54-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-128"><a href="#cb54-128" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-129"><a href="#cb54-129" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 1</span></span>
+<span id="cb54-130"><a href="#cb54-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-131"><a href="#cb54-131" aria-hidden="true" tabindex="-1"></a>Check how many distinct genera there are. Tip: use <span class="in">`unique()`</span> and <span class="in">`length()`</span></span>
+<span id="cb54-132"><a href="#cb54-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-133"><a href="#cb54-133" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-134"><a href="#cb54-134" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-135"><a href="#cb54-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-138"><a href="#cb54-138" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-139"><a href="#cb54-139" aria-hidden="true" tabindex="-1"></a>taxonomy<span class="sc">$</span>Genus <span class="sc">%&gt;%</span></span>
+<span id="cb54-140"><a href="#cb54-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb54-141"><a href="#cb54-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>()</span>
+<span id="cb54-142"><a href="#cb54-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-143"><a href="#cb54-143" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-144"><a href="#cb54-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-145"><a href="#cb54-145" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 2</span></span>
+<span id="cb54-146"><a href="#cb54-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-147"><a href="#cb54-147" aria-hidden="true" tabindex="-1"></a>How many OTUs are there in each Phylum? Tip: use <span class="in">`count()`</span> or <span class="in">`table()`</span></span>
+<span id="cb54-148"><a href="#cb54-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-149"><a href="#cb54-149" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-150"><a href="#cb54-150" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-151"><a href="#cb54-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-154"><a href="#cb54-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-155"><a href="#cb54-155" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span> <span class="fu">count</span>(Phylum)</span>
+<span id="cb54-156"><a href="#cb54-156" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-157"><a href="#cb54-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-160"><a href="#cb54-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-161"><a href="#cb54-161" aria-hidden="true" tabindex="-1"></a>taxonomy<span class="sc">$</span>Phylum <span class="sc">%&gt;%</span> <span class="fu">table</span>(<span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb54-162"><a href="#cb54-162" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-163"><a href="#cb54-163" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-164"><a href="#cb54-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-165"><a href="#cb54-165" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 3</span></span>
+<span id="cb54-166"><a href="#cb54-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-167"><a href="#cb54-167" aria-hidden="true" tabindex="-1"></a>What genera are in the phylum Actinobacteria? Tip: use <span class="in">`filter()`</span></span>
+<span id="cb54-168"><a href="#cb54-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-169"><a href="#cb54-169" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-170"><a href="#cb54-170" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-171"><a href="#cb54-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-174"><a href="#cb54-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-175"><a href="#cb54-175" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
+<span id="cb54-176"><a href="#cb54-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Phylum <span class="sc">==</span> <span class="st">&quot;Actinobacteria&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-177"><a href="#cb54-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Genus, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb54-178"><a href="#cb54-178" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-179"><a href="#cb54-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-180"><a href="#cb54-180" aria-hidden="true" tabindex="-1"></a>Or for just their names:</span>
+<span id="cb54-181"><a href="#cb54-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-184"><a href="#cb54-184" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-185"><a href="#cb54-185" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
+<span id="cb54-186"><a href="#cb54-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Phylum <span class="sc">==</span> <span class="st">&quot;Actinobacteria&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-187"><a href="#cb54-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(Genus) <span class="sc">%&gt;%</span></span>
+<span id="cb54-188"><a href="#cb54-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb54-189"><a href="#cb54-189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-190"><a href="#cb54-190" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-191"><a href="#cb54-191" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-192"><a href="#cb54-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-193"><a href="#cb54-193" aria-hidden="true" tabindex="-1"></a><span class="fu">### OTU count table</span></span>
+<span id="cb54-194"><a href="#cb54-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-195"><a href="#cb54-195" aria-hidden="true" tabindex="-1"></a>First let&#39;s plot a histogram of OTU number 1.</span>
+<span id="cb54-196"><a href="#cb54-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-197"><a href="#cb54-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
+<span id="cb54-198"><a href="#cb54-198" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;% ggplot(aes(OTU_00001)) +</span></span>
+<span id="cb54-199"><a href="#cb54-199" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(binwidth = 5)</span></span>
+<span id="cb54-200"><a href="#cb54-200" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-201"><a href="#cb54-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-202"><a href="#cb54-202" aria-hidden="true" tabindex="-1"></a>Looks like there are a lot of zeros!</span>
+<span id="cb54-203"><a href="#cb54-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-206"><a href="#cb54-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-207"><a href="#cb54-207" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="at">OTU00001_has_0_counts =</span> counts<span class="sc">$</span>OTU_00001 <span class="sc">==</span> <span class="dv">0</span>, <span class="at">useNA =</span> <span class="st">&quot;ifany&quot;</span>)</span>
+<span id="cb54-208"><a href="#cb54-208" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-209"><a href="#cb54-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-210"><a href="#cb54-210" aria-hidden="true" tabindex="-1"></a>----</span>
+<span id="cb54-211"><a href="#cb54-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-212"><a href="#cb54-212" aria-hidden="true" tabindex="-1"></a>Attempt the following tasks to explore further!</span>
+<span id="cb54-213"><a href="#cb54-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-214"><a href="#cb54-214" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb54-215"><a href="#cb54-215" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 1</span></span>
+<span id="cb54-216"><a href="#cb54-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-217"><a href="#cb54-217" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`filter()`</span> to plot only the non-zero entries for OTU 1.</span>
+<span id="cb54-218"><a href="#cb54-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-219"><a href="#cb54-219" aria-hidden="true" tabindex="-1"></a>Try also using <span class="in">`+ scale_x_log10()`</span> to transform the plot axis scale.</span>
+<span id="cb54-220"><a href="#cb54-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-221"><a href="#cb54-221" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-222"><a href="#cb54-222" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-223"><a href="#cb54-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-224"><a href="#cb54-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
+<span id="cb54-225"><a href="#cb54-225" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
+<span id="cb54-226"><a href="#cb54-226" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(OTU_00001 != 0) %&gt;%</span></span>
+<span id="cb54-227"><a href="#cb54-227" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(OTU_00001)) +</span></span>
+<span id="cb54-228"><a href="#cb54-228" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(bins = 30) +</span></span>
+<span id="cb54-229"><a href="#cb54-229" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_x_log10()</span></span>
+<span id="cb54-230"><a href="#cb54-230" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-231"><a href="#cb54-231" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-232"><a href="#cb54-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-233"><a href="#cb54-233" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 2</span></span>
+<span id="cb54-234"><a href="#cb54-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-235"><a href="#cb54-235" aria-hidden="true" tabindex="-1"></a>Use <span class="in">`mutate()`</span> to create a temporary log-transformed variable <span class="in">`log_OTU1`</span> and plot its distribution.</span>
+<span id="cb54-236"><a href="#cb54-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-237"><a href="#cb54-237" aria-hidden="true" tabindex="-1"></a>*Note that you can&#39;t do log(0), so you will need to add 1 to all values first, i.e.* <span class="in">`log10(OTU_00001 + 1)`</span></span>
+<span id="cb54-238"><a href="#cb54-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-239"><a href="#cb54-239" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-240"><a href="#cb54-240" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-241"><a href="#cb54-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-242"><a href="#cb54-242" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=8, fig.height=2}</span></span>
+<span id="cb54-243"><a href="#cb54-243" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
+<span id="cb54-244"><a href="#cb54-244" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU1 = log10(OTU_00001 + 1)) %&gt;%</span></span>
+<span id="cb54-245"><a href="#cb54-245" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(log_OTU1)) +</span></span>
+<span id="cb54-246"><a href="#cb54-246" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_histogram(bins = 30)</span></span>
+<span id="cb54-247"><a href="#cb54-247" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-248"><a href="#cb54-248" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-249"><a href="#cb54-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-250"><a href="#cb54-250" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 3</span></span>
+<span id="cb54-251"><a href="#cb54-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-252"><a href="#cb54-252" aria-hidden="true" tabindex="-1"></a>Plot OTU 1 against OTU 2 as a scatter plot using <span class="in">`geom_point`</span>.</span>
+<span id="cb54-253"><a href="#cb54-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-254"><a href="#cb54-254" aria-hidden="true" tabindex="-1"></a>Remember to add 1 before log10 transformation of both variables.</span>
+<span id="cb54-255"><a href="#cb54-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-256"><a href="#cb54-256" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-257"><a href="#cb54-257" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-258"><a href="#cb54-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-259"><a href="#cb54-259" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, fig.width=4, fig.height=4}</span></span>
+<span id="cb54-260"><a href="#cb54-260" aria-hidden="true" tabindex="-1"></a><span class="in">#| out-width: &quot;50%&quot;</span></span>
+<span id="cb54-261"><a href="#cb54-261" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-align: &quot;center&quot;</span></span>
+<span id="cb54-262"><a href="#cb54-262" aria-hidden="true" tabindex="-1"></a><span class="in">counts %&gt;%</span></span>
+<span id="cb54-263"><a href="#cb54-263" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU1 = log10(OTU_00001 + 1)) %&gt;%</span></span>
+<span id="cb54-264"><a href="#cb54-264" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(log_OTU2 = log10(OTU_00002 + 1)) %&gt;%</span></span>
+<span id="cb54-265"><a href="#cb54-265" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(x = log_OTU1, y = log_OTU2)) +</span></span>
+<span id="cb54-266"><a href="#cb54-266" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point()</span></span>
+<span id="cb54-267"><a href="#cb54-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-268"><a href="#cb54-268" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-269"><a href="#cb54-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-270"><a href="#cb54-270" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 4</span></span>
+<span id="cb54-271"><a href="#cb54-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-272"><a href="#cb54-272" aria-hidden="true" tabindex="-1"></a>But what type of bacteria do these amplicon sequences belong to?</span>
+<span id="cb54-273"><a href="#cb54-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-274"><a href="#cb54-274" aria-hidden="true" tabindex="-1"></a>Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.</span>
+<span id="cb54-275"><a href="#cb54-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-276"><a href="#cb54-276" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-277"><a href="#cb54-277" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-278"><a href="#cb54-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-281"><a href="#cb54-281" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-282"><a href="#cb54-282" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span> <span class="fu">filter</span>(OTU <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;OTU_00001&quot;</span>, <span class="st">&quot;OTU_00002&quot;</span>))</span>
+<span id="cb54-283"><a href="#cb54-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-284"><a href="#cb54-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-287"><a href="#cb54-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-288"><a href="#cb54-288" aria-hidden="true" tabindex="-1"></a>taxonomy <span class="sc">%&gt;%</span></span>
+<span id="cb54-289"><a href="#cb54-289" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(OTU <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;OTU_00001&quot;</span>, <span class="st">&quot;OTU_00002&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb54-290"><a href="#cb54-290" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(OTU, Phylum, Family, Genus) </span>
+<span id="cb54-291"><a href="#cb54-291" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-292"><a href="#cb54-292" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-293"><a href="#cb54-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-294"><a href="#cb54-294" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Task 5</span></span>
+<span id="cb54-295"><a href="#cb54-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-296"><a href="#cb54-296" aria-hidden="true" tabindex="-1"></a>Now make histograms and look up the taxonomy for the next thousand OTUs...</span>
+<span id="cb54-297"><a href="#cb54-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-298"><a href="#cb54-298" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=&quot;true&quot; appearance=&quot;simple&quot;}</span>
+<span id="cb54-299"><a href="#cb54-299" aria-hidden="true" tabindex="-1"></a><span class="fu">##### SOLUTION:</span></span>
+<span id="cb54-300"><a href="#cb54-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-301"><a href="#cb54-301" aria-hidden="true" tabindex="-1"></a>Okay, that was a joke. 🤡</span>
+<span id="cb54-302"><a href="#cb54-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-303"><a href="#cb54-303" aria-hidden="true" tabindex="-1"></a>It is possible to make a thousand plots, because R is very good at repetitive tasks.</span>
+<span id="cb54-304"><a href="#cb54-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-305"><a href="#cb54-305" aria-hidden="true" tabindex="-1"></a>But, this would not be very useful, because you could not look at them all.</span>
+<span id="cb54-306"><a href="#cb54-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-307"><a href="#cb54-307" aria-hidden="true" tabindex="-1"></a>In the next section of this practical, we will explore smarter ways to analyse microbiota compositions.</span>
+<span id="cb54-308"><a href="#cb54-308" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-309"><a href="#cb54-309" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb54-310"><a href="#cb54-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-311"><a href="#cb54-311" aria-hidden="true" tabindex="-1"></a><span class="fu">## Assemble a phyloseq 🛠️</span></span>
+<span id="cb54-312"><a href="#cb54-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-313"><a href="#cb54-313" aria-hidden="true" tabindex="-1"></a>So far we have not used any R packages specialised for microbiome data.</span>
+<span id="cb54-314"><a href="#cb54-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-315"><a href="#cb54-315" aria-hidden="true" tabindex="-1"></a>Let&#39;s do so, because it will make our next tasks a lot easier!</span>
+<span id="cb54-316"><a href="#cb54-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-319"><a href="#cb54-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-320"><a href="#cb54-320" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(phyloseq)</span>
+<span id="cb54-321"><a href="#cb54-321" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microViz)</span>
+<span id="cb54-322"><a href="#cb54-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-323"><a href="#cb54-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-324"><a href="#cb54-324" aria-hidden="true" tabindex="-1"></a>We will start by combining our three dataframes into one <span class="in">`phyloseq`</span> object</span>
+<span id="cb54-325"><a href="#cb54-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-326"><a href="#cb54-326" aria-hidden="true" tabindex="-1"></a><span class="fu">### OTU counts + taxonomy</span></span>
+<span id="cb54-327"><a href="#cb54-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-328"><a href="#cb54-328" aria-hidden="true" tabindex="-1"></a>phyloseq uses row or column names to match OTUs across the count and taxonomy tables.</span>
+<span id="cb54-329"><a href="#cb54-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-330"><a href="#cb54-330" aria-hidden="true" tabindex="-1"></a>In addition, the taxonomy table must contain only taxonomic ranks in descending order, and the count table must be converted to a numeric matrix.</span>
+<span id="cb54-331"><a href="#cb54-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-334"><a href="#cb54-334" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-335"><a href="#cb54-335" aria-hidden="true" tabindex="-1"></a>count_matrix <span class="ot">&lt;-</span> counts <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>sample) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb54-336"><a href="#cb54-336" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(count_matrix) <span class="ot">&lt;-</span> counts<span class="sc">$</span>sample</span>
+<span id="cb54-337"><a href="#cb54-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-338"><a href="#cb54-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-341"><a href="#cb54-341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-342"><a href="#cb54-342" aria-hidden="true" tabindex="-1"></a>tax_matrix <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(taxonomy)</span>
+<span id="cb54-343"><a href="#cb54-343" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tax_matrix) <span class="ot">&lt;-</span> taxonomy<span class="sc">$</span>OTU</span>
+<span id="cb54-344"><a href="#cb54-344" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-345"><a href="#cb54-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-348"><a href="#cb54-348" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-349"><a href="#cb54-349" aria-hidden="true" tabindex="-1"></a>ps <span class="ot">&lt;-</span> <span class="fu">phyloseq</span>(</span>
+<span id="cb54-350"><a href="#cb54-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">otu_table</span>(count_matrix, <span class="at">taxa_are_rows =</span> <span class="cn">FALSE</span>), </span>
+<span id="cb54-351"><a href="#cb54-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tax_table</span>(tax_matrix)</span>
+<span id="cb54-352"><a href="#cb54-352" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-353"><a href="#cb54-353" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-354"><a href="#cb54-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-357"><a href="#cb54-357" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-358"><a href="#cb54-358" aria-hidden="true" tabindex="-1"></a>ps</span>
+<span id="cb54-359"><a href="#cb54-359" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-360"><a href="#cb54-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-361"><a href="#cb54-361" aria-hidden="true" tabindex="-1"></a><span class="fu">### Adding sample metadata</span></span>
+<span id="cb54-362"><a href="#cb54-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-363"><a href="#cb54-363" aria-hidden="true" tabindex="-1"></a>phyloseq uses row names to match samples (across the OTU count table and the sample metadata).</span>
+<span id="cb54-364"><a href="#cb54-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-367"><a href="#cb54-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-368"><a href="#cb54-368" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">sample_names</span>(ps))</span>
+<span id="cb54-369"><a href="#cb54-369" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-370"><a href="#cb54-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-371"><a href="#cb54-371" aria-hidden="true" tabindex="-1"></a>Notice that in the phyloseq object the sample names have underscores, but they have hyphens in the sample metadata.</span>
+<span id="cb54-372"><a href="#cb54-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-375"><a href="#cb54-375" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-376"><a href="#cb54-376" aria-hidden="true" tabindex="-1"></a>meta</span>
+<span id="cb54-377"><a href="#cb54-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-378"><a href="#cb54-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-379"><a href="#cb54-379" aria-hidden="true" tabindex="-1"></a>We can fix that with the <span class="in">`stringr`</span> package <span class="in">`str_replace`</span> function.</span>
+<span id="cb54-380"><a href="#cb54-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-383"><a href="#cb54-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-384"><a href="#cb54-384" aria-hidden="true" tabindex="-1"></a>meta<span class="sc">$</span>sample <span class="ot">&lt;-</span> meta<span class="sc">$</span>sample <span class="sc">%&gt;%</span> <span class="fu">str_replace</span>(<span class="at">pattern =</span> <span class="st">&quot;-&quot;</span>, <span class="at">replacement =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb54-385"><a href="#cb54-385" aria-hidden="true" tabindex="-1"></a>meta</span>
+<span id="cb54-386"><a href="#cb54-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-387"><a href="#cb54-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-388"><a href="#cb54-388" aria-hidden="true" tabindex="-1"></a>Now make them row names, check they all match, and add the metadata to the phyloseq object.</span>
+<span id="cb54-389"><a href="#cb54-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-392"><a href="#cb54-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-393"><a href="#cb54-393" aria-hidden="true" tabindex="-1"></a>meta_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(meta)</span>
+<span id="cb54-394"><a href="#cb54-394" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(meta_df) <span class="ot">&lt;-</span> meta<span class="sc">$</span>sample</span>
+<span id="cb54-395"><a href="#cb54-395" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">rownames</span>(meta_df) <span class="sc">%in%</span> <span class="fu">sample_names</span>(ps))</span>
+<span id="cb54-396"><a href="#cb54-396" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-397"><a href="#cb54-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-400"><a href="#cb54-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-401"><a href="#cb54-401" aria-hidden="true" tabindex="-1"></a><span class="fu">sample_data</span>(ps) <span class="ot">&lt;-</span> meta_df</span>
+<span id="cb54-402"><a href="#cb54-402" aria-hidden="true" tabindex="-1"></a>ps</span>
+<span id="cb54-403"><a href="#cb54-403" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-404"><a href="#cb54-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-405"><a href="#cb54-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-406"><a href="#cb54-406" aria-hidden="true" tabindex="-1"></a><span class="fu">## Build some bar charts 📊</span></span>
+<span id="cb54-407"><a href="#cb54-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-408"><a href="#cb54-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-409"><a href="#cb54-409" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discover diversity 🎉</span></span>
+<span id="cb54-410"><a href="#cb54-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-411"><a href="#cb54-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-412"><a href="#cb54-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-413"><a href="#cb54-413" aria-hidden="true" tabindex="-1"></a><span class="fu">## Next! ⏩</span></span>
+<span id="cb54-414"><a href="#cb54-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-415"><a href="#cb54-415" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Click here: LINK TO NEXT PAGE</span>
+<span id="cb54-416"><a href="#cb54-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-417"><a href="#cb54-417" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session info</span></span>
+<span id="cb54-418"><a href="#cb54-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-419"><a href="#cb54-419" aria-hidden="true" tabindex="-1"></a>&lt;details&gt;</span>
+<span id="cb54-420"><a href="#cb54-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-423"><a href="#cb54-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-424"><a href="#cb54-424" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span>
+<span id="cb54-425"><a href="#cb54-425" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb54-426"><a href="#cb54-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-427"><a href="#cb54-427" aria-hidden="true" tabindex="-1"></a>&lt;/details&gt;</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":false,"descPosition":"bottom","openEffect":"zoom","selector":".lightbox","closeEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

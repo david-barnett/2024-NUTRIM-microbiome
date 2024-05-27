@@ -26,7 +26,7 @@ code-tools: true
 code-fold: false
 code-link: true
 lightbox: auto
-cache: false
+cache: true
 ---
 
 ## Intro
@@ -183,6 +183,8 @@ Looks like there are a lot of zeros!
 table(OTU00001_has_0_counts = counts$OTU_00001 == 0, useNA = "ifany")
 ```
 
+----
+
 Attempt the following tasks to explore further!
 
 ::: panel-tabset
@@ -206,9 +208,9 @@ counts %>%
 
 ##### Task 2
 
-Use `mutate()` to temporarily create a new log-transformed variable called log_OTU1 and plot its distribution.
+Use `mutate()` to create a temporary log-transformed variable `log_OTU1` and plot its distribution.
 
-*Note that because you cannot log-transform 0s you will need to add 1 to all values first, i.e.* `log10(OTU_00001 + 1)`
+*Note that you can't do log(0), so you will need to add 1 to all values first, i.e.* `log10(OTU_00001 + 1)`
 
 ::: {.callout-note collapse="true" appearance="simple"}
 ##### SOLUTION:
@@ -243,6 +245,8 @@ counts %>%
 
 ##### Task 4
 
+But what type of bacteria do these amplicon sequences belong to?
+
 Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.
 
 ::: {.callout-note collapse="true" appearance="simple"}
@@ -273,9 +277,89 @@ It is possible to make a thousand plots, because R is very good at repetitive ta
 But, this would not be very useful, because you could not look at them all.
 
 In the next section of this practical, we will explore smarter ways to analyse microbiota compositions.
+:::
+:::
 
-:::
-:::
+## Assemble a phyloseq 🛠️
+
+So far we have not used any R packages specialised for microbiome data.
+
+Let's do so, because it will make our next tasks a lot easier!
+
+```{r}
+library(phyloseq)
+library(microViz)
+```
+
+We will start by combining our three dataframes into one `phyloseq` object
+
+### OTU counts + taxonomy
+
+phyloseq uses row or column names to match OTUs across the count and taxonomy tables.
+
+In addition, the taxonomy table must contain only taxonomic ranks in descending order, and the count table must be converted to a numeric matrix.
+
+```{r}
+count_matrix <- counts %>% select(-sample) %>% as.matrix()
+rownames(count_matrix) <- counts$sample
+```
+
+```{r}
+tax_matrix <- as.matrix(taxonomy)
+rownames(tax_matrix) <- taxonomy$OTU
+```
+
+```{r}
+ps <- phyloseq(
+  otu_table(count_matrix, taxa_are_rows = FALSE), 
+  tax_table(tax_matrix)
+)
+```
+
+```{r}
+ps
+```
+
+### Adding sample metadata
+
+phyloseq uses row names to match samples (across the OTU count table and the sample metadata).
+
+```{r}
+head(sample_names(ps))
+```
+
+Notice that in the phyloseq object the sample names have underscores, but they have hyphens in the sample metadata.
+
+```{r}
+meta
+```
+
+We can fix that with the `stringr` package `str_replace` function.
+
+```{r}
+meta$sample <- meta$sample %>% str_replace(pattern = "-", replacement = "_")
+meta
+```
+
+Now make them row names, check they all match, and add the metadata to the phyloseq object.
+
+```{r}
+meta_df <- as.data.frame(meta)
+rownames(meta_df) <- meta$sample
+all(rownames(meta_df) %in% sample_names(ps))
+```
+
+```{r}
+sample_data(ps) <- meta_df
+ps
+```
+
+
+## Build some bar charts 📊
+
+
+## Discover diversity 🎉
+
 
 
 ## Next! ⏩
