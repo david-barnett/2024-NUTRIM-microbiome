@@ -1,0 +1,291 @@
+---
+title: "Practical 1A - R fundamentals"
+subtitle: "2024 NUTRIM microbiome & metabolome workshop"
+author: YOUR-NAME
+date: last-modified
+keep-md: false
+embed-resources: true
+format: html
+theme: 
+  light: flatly
+  dark: darkly
+toc: true
+number-sections: true
+---
+
+## Learning goals 💪
+
+-   [Using Quarto](#using-quarto)
+-   [Reading tabular data](#reading-data)
+-   [Inspecting data](#inspecting-data)
+-   [Joining dataframes](#joining-dataframes)
+-   [Mutating dataframes](#mutating-data)
+
+## Using Quarto 📝 {#using-quarto}
+
+During this workshop, we will write code and notes in Quarto documents.
+
+Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
+
+```{r}
+# write code in "chunks" (and comments too, using the # symbol)
+print("Hello World")
+```
+
+Insert a chunk with ctrl/cmd + shift + I
+
+```{r, eval=FALSE}
+print("Run this one line with ctrl + enter, or cmd + enter on macOS")
+print("or run a whole chunk with ctrl/cmd + SHIFT + enter")
+```
+
+Run all previous chunks by clicking the first button in the corner of the chunk
+
+## Load R packages 📦
+
+It is good practice to load all the packages you need at the top of your notebook.
+
+```{r}
+
+```
+
+## Reading data 📂 {#reading-data}
+
+How do we read a table of data from a file, e.g. an Excel file?
+
+```{r}
+# give your objects short but informative names!
+meta <- 
+```
+
+
+## Inspecting data {#inspecting-data}
+
+### Look at the tables 👀
+
+Look at the metadata.
+
+```{r}
+
+```
+
+
+### Summarise 📋
+
+You can count the number of times a category occurs, similar to the table function.
+
+```{r}
+meta %>% count(diagnosis)
+```
+
+Or count combinations of categories.
+
+```{r}
+meta %>% 
+```
+
+Or compute other summary statistics.
+
+```{r}
+meta %>% summarise(age_mean = mean(age_years), age_sd = sd(age_years))
+```
+
+Or compute grouped summary statistics
+
+```{r}
+meta %>% 
+```
+
+### Visualise 📊
+
+R's base graphics can be used to quickly summarise data distributions.
+
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
+
+meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
+```
+
+
+ggplot2 is a popular and powerful plotting package.
+
+#### Bar chart
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3
+ggplot(meta) + 
+```
+
+#### Histogram
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+ggplot(meta) + 
+  
+```
+:::
+
+
+
+## Joining data 🟧+️🟪 {#joining-dataframes}
+
+Often, your data are not all in one table. For example, there were two sheets of data in the metadata Excel file, which we stored in the dataframe objects `meta` and `meds`
+
+::: panel-tabset
+#### meta
+
+The main dataframe `meta` contains most of the data about each patient:
+
+```{r}
+meta
+```
+
+#### meds
+
+The second dataframe `meds` contains medications info for the IBD cases:
+
+```{r}
+meds
+```
+:::
+
+`dplyr` provides functions to "join" dataframes together, using shared variables.
+
+```{r}
+all_meta <- left_join(meta, meds)
+```
+
+By default the join function will perform a "natural" join using all shared variables. For greater control you can specify a "key" variable, or set of variables, that should be used.
+
+```{r}
+# this should do the same thing as the natural join shown above
+all_meta <- left_join(meta, meds, by = 
+```
+
+What happened with the Control group? (remember they were not present in `meds`!)
+
+Inspect the `all_meta` dataframe to find out! e.g. `View(all_meta)`
+
+
+## Mutating data 🧬? {#mutating-data}
+
+Often, you need to modify your variables, or create new ones.
+
+### Modify and assign
+
+1.  Apply a function/transformation to an existing variable (or multiple variables).
+2.  Assign the result to a new variable, or overwrite the original variable.
+
+
+#### Base R 🤖
+
+For simple transformations you can easily do this with base R.
+
+```{r}
+# create a logical variable, TRUE if patient has family history of IBD
+all_meta$ibd_fhx <- all_meta$family_history == "fhx"
+
+# always check the result is what you expected!
+all_meta[, c("ID", "family_history", "ibd_fhx")]
+```
+
+#### dplyr::mutate 👽
+
+The `mutate` function from dplyr is great for making multiple or complex transformations. You refer to variables without repeating the name of the dataframe. It is as if you are working "inside" the dataframe.
+
+```{r}
+# this is equivalent to the previous block
+all_meta <- all_meta %>% mutate(
+
+# check the result again
+
+```
+
+
+### Temporary or persistent?
+
+We can convert character string variables to factor variables to specify an ordering of their levels (e.g. for plotting).
+
+
+You can temporarily mutate a dataframe and use the result. This is easy with pipes.
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+
+all_meta %>% 
+  mutate(diagnosis = factor(diagnosis, levels = c("CD", "UC", "Other"))) %>% 
+  ggplot(aes(diagnosis, age_years)) + geom_boxplot()
+```
+
+Notice this did NOT persistently modify the diagnosis variable, it is still "character" class.
+
+```{r}
+class(all_meta$diagnosis) # no persistent changes, diagnosis is still character!
+```
+
+
+`mutate` returns a modified dataframe and you must assign this to an object for changes to persist.
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+all_meta <- all_meta %>% mutate(diagnosis = factor(diagnosis, c("CD", "UC", "Other")))
+all_meta %>% ggplot(aes(diagnosis, age_years)) + geom_boxplot()
+```
+
+```{r}
+class(all_meta$diagnosis) 
+```
+
+### More mutation
+
+We need to clean up the medication history.
+
+```{r}
+table(all_meta$medication, useNA = "if")
+table(all_meta$immunosuppression_level, useNA = "if")
+```
+
+We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that.
+We will also replace Controls' immunosuppression_level NA values with "none".
+
+```{r}
+
+```
+
+We now want logical variables indicating if the patient recently had antibiotics (abx), steroids, or other immunosuppressive drugs (imsp). 
+
+```{r}
+
+```
+
+For the character variables with more than two values, we can convert them to factors, to encode our preferred ordering of their levels.
+
+```{r}
+all_meta <- all_meta %>% mutate(
+  
+
+)
+```
+
+## Next! ⏩
+
+- We have recapped some R fundamentals and introduced the sample metadata.
+
+- Next we will start working with microbiome data! 
+
+
+## Session info 
+
+For reproducibility, it is useful to record the packages and versions used in your analyses. This is easy to do with `sessioninfo::session_info()`.
+
+```{r}
+sessioninfo::session_info()
+```
+
