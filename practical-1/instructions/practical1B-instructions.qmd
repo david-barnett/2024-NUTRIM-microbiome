@@ -502,6 +502,11 @@ ps_alpha %>%
 - In the next lecture you will learn more about the main approaches for microbiota data analysis.
 - In the next practical session, we will come back to these data with a plan, an analysis plan!
 
+```{r, include=FALSE}
+saveRDS(ps, file = here("data", "papa2012", "processed", "papa12_phyloseq.rds"))
+```
+
+
 ## Session info
 
 <details>
