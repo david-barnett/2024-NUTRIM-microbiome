@@ -571,9 +571,12 @@ all_meta <- all_meta %>% mutate(
 
 For the character variables with more than two values, we can convert them to factors, to encode our preferred ordering of their levels.
 
+In R stats methods, the 1st level of a factor is often used as the reference level by default.
+So we should keep this in mind, and typically set control levels as the 1st factor level. We can always temporarily change this for plots.
+
 ```{r}
 all_meta <- all_meta %>% mutate(
-  diagnosis = factor(diagnosis, c("CD", "UC", "Other")),
+  diagnosis = factor(diagnosis, c("Other", "CD", "UC")),
   active = factor(active, c("control", "inactive", "active")),
   activity = factor(activity, c("control", "inactive", "mild", "moderate", "severe"))
 )
