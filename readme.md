@@ -6,6 +6,8 @@
 
 -   posit.cloud free account signup - <https://posit.cloud/plans/free>
 
+------------------------------------------------------------------------
+
 ## Practical Instructions
 
 ### Practical 1

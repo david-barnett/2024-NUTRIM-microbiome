@@ -32,13 +32,11 @@ cache: true
 
 ## Intro
 
-**WORK IN PROGRESS** - this tutorial is currently just roughly adapted from previous content with a different dataset
-
-More refinement and restructuring is planned.
+**WORK IN PROGRESS** - More restructuring and refinement is planned.
 
 ## Research questions 💪
 
-1.  **Primary aim:** \
+1.  **Primary aim:**\
     Does the bacterial gut microbiota composition of IBD-diagnosed patients differ from the control patients?
     a.  **Diversity:** Is richness or diversity associated with IBD diagnosis?
     b.  **Composition:** Does overall bacterial microbiota composition associated with IBD diagnosis?
@@ -49,11 +47,11 @@ More refinement and restructuring is planned.
 
 ## Outline of Part 2A
 
-1.  Alpha diversity - simple stats
-2.  Overall compositions
-    1.  Interactive ordination plots and bar charts
-    2.  PCoA and PERMANOVA
-    3.  Bar charts
+1.  Diversity
+    -   Compare diversity between groups
+2.  Dissimilarity
+    -   Compare overall compositions between groups
+    -   (Interactive) ordination plots and bar charts
 3.  Differential abundance testing
 
 ## Load R packages 📦
@@ -64,9 +62,11 @@ library(tidyverse)
 library(broom)
 library(phyloseq)
 library(microViz)
+library(ggstatsplot)
+library(writexl)
 ```
 
-## Read and clean data
+## Read phyloseq data
 
 Read the phyloseq we created in part 1.
 
@@ -74,60 +74,7 @@ Read the phyloseq we created in part 1.
 ps <- read_rds(file = here("data/papa2012/processed/papa12_phyloseq.rds"))
 ```
 
-------------------------------------------------------------------------
-
-## Plot compositions
-
--   Stacked compositional bar charts using the `microViz` package, `comp_barplot()` function.
--   Let's start with a smaller subset of the data, just the control group.
-
-::: callout-tip
-### Tip: filtering phyloseq samples
-
-We can filter the samples like this, using the sample_data information
-
-```{r}
-ps %>% ps_filter(case_control == "Control") # similar to a dplyr filter!
-```
-
-If you forget a variable's levels, check with `table()` or `unique()`
-
-```{r}
-ps@sam_data$case_control %>% table()
-```
-:::
-
-```{r, fig.width=5, fig.height=7, fig.align='center', out.width="70%"}
-ps %>%
-  ps_filter(case_control == "Control") %>% 
-  comp_barplot("Family", n_taxa = 10, merge_other = FALSE) +
-  coord_flip() +
-  ggtitle("Control participants")
-```
-
-### Organising your bar charts
-
--   Let's look at all of the data from all diagnosis groups.
--   We can add the ggplot2 `facet_wrap()` to our plot, to separate the groups.
-
-```{r}
-#| fig-width: 7
-#| fig-height: 5
-ps %>% 
-  comp_barplot("Family", n_taxa = 10, merge_other = FALSE) +
-  facet_wrap(facets = vars(diagnosis), scales = "free") +
-  coord_flip() 
-```
-
-::: {.callout-note collapse="true"}
-### More barchart resources:
-
-More examples/tutorial of visualizing microbiota compositions using stacked bar charts can be found here: <https://david-barnett.github.io/microViz/articles/web-only/compositions.html>
-:::
-
-------------------------------------------------------------------------
-
-## ⚖️ Ecosystem diversity
+## ⚖️ Alpha diversity
 
 Our research questions for this section are:
 
@@ -140,7 +87,7 @@ Our research questions for this section are:
 -   We already computed the observed richness of genera in part 1B.
 
 ::: panel-tabset
-#### Plot
+#### Plot richness
 
 ```{r}
 #| fig-height: 3
@@ -149,24 +96,17 @@ ps %>%
   samdat_tbl() %>% 
   ggplot(aes(x = N_genera, y = diagnosis, color = diagnosis)) + 
   geom_boxplot(outliers = FALSE) +
-  geom_jitter(height = 0.2) +
+  geom_jitter(height = 0.15, alpha = 0.5) +
   theme_classic()
 ```
 
 #### Linear regression / ANOVA
 
-You can use standard statistical testing on the richness or diversity values e.g. linear regression
+You can use standard statistical testing on the richness values e.g. linear regression or ANOVA
 
 ```{r}
 richness_lm <- lm(data = samdat_tbl(ps), formula = N_genera ~ diagnosis)
 anova(richness_lm)
-```
-
-You can get a tidy tibble of results with the `tidy()` function from `broom` package.
-
-```{r}
-richness_stats <- broom::tidy(anova(richness_lm))
-richness_stats
 ```
 
 You could do also standard ANOVA post-hoc pairwise comparisons.
@@ -176,36 +116,34 @@ richness_tukey <- TukeyHSD(aov(richness_lm))
 richness_tukey
 ```
 
-```{r}
-summary(richness_lm)
-```
-
 #### `ggstatsplot`
 
 Combine group comparison stats and plots in one go with `ggstatsplot::ggbetweenstats()`
 
 ```{r}
-library(ggstatsplot)
+#| fig-width: 7
+#| fig-height: 5
 ggbetweenstats(
   data = samdat_tbl(ps), x = diagnosis, y = N_genera, 
   type = "parametric", p.adjust.method = "fdr", var.equal = TRUE, 
   bf.message = FALSE, results.subtitle = TRUE
 )
-
 ```
 :::
 
 ### Diversity
 
--   Remember: a true measure of ecosystem diversity (e.g. Shannon index) will consider the richness and evenness of the ecosystem.
--   A rich ecosystem predominated by one taxon is still intuitively a less diverse ecosystem than one with an even distribution of the same number of taxa.
+-   **Remember:** a true measure of ecosystem diversity (e.g. Shannon index) will consider the richness *and evenness* of the ecosystem.
+-   A rich ecosystem dominated by only one or two of its taxa is still a less diverse ecosystem than one with an **even** distribution of the same number of taxa.
 -   We already computed Shannon diversity of genera and the effective Shannon in part 1B.
 -   Here we will use the effective Shannon diversity $e^H$ - because of its more intuitive interpretation.
 
 ::: panel-tabset
-#### Plot
+#### Plot diversity
 
 ```{r}
+#| fig-height: 3
+#| fig-width: 5
 ps %>% 
   samdat_tbl() %>% 
   ggplot(aes(x = Effective_Shannon_Genus, y = diagnosis, color = diagnosis)) + 
@@ -219,42 +157,42 @@ ps %>%
 ```{r}
 eShannon_lm <- lm(data = samdat_tbl(ps), formula = Effective_Shannon_Genus ~ diagnosis)
 anova(eShannon_lm)
-summary(eShannon_lm)
 ```
 
-Get a tidy tibble of results with the `tidy()` function from `broom` package.
-
 ```{r}
-eShannon_stats <- broom::tidy(anova(eShannon_lm))
-eShannon_stats
+eShannon_tukey <- TukeyHSD(aov(eShannon_lm))
+eShannon_tukey
 ```
 
-TODO add posthoc pairwise comparisons
+::: {.callout-tip collapse="true"}
+## Save the statistics?
+
+You can get a tidy data frame of results using the `broom::tidy` function on various statistical model objects.
 
 ```{r}
-# TODO posthoc
+broom::tidy(eShannon_tukey)
 ```
 
-#### `ggstatsplot`
+This can be useful when you need to save your model output e.g. to Excel, to format for a table in your article.
 
-Combine stats and plots in one go with ggstatsplot betweenstats
-
-```{r}
-# TODO
-```
-
-#### Covariate adjusted
-
-```{r}
-
+```{r, eval=FALSE}
+broom::tidy(eShannon_tukey) %>% write_xlsx(here("practical-2/test-table.xlsx"))
 ```
 :::
 
+#### `ggstatsplot`
+
 ```{r}
-#
-#
-#
+#| fig-width: 7
+#| fig-height: 5
+library(ggstatsplot)
+ggbetweenstats(
+  data = samdat_tbl(ps), x = diagnosis, y = Effective_Shannon_Genus, 
+  type = "parametric", p.adjust.method = "fdr", var.equal = TRUE, 
+  bf.message = FALSE, results.subtitle = TRUE
+)
 ```
+:::
 
 ## Dissimilarity
 
@@ -262,9 +200,9 @@ Combine stats and plots in one go with ggstatsplot betweenstats
 
 -   Calculating the dissimilarities between pairs of microbiome samples
 -   We talked about these commonly-used dissimilarity measures in the lecture.
-    -   **Binary Jaccard** - presence-absence
+    -   **Binary Jaccard** - presence/absence
     -   **Bray-Curtis** - abundance-weighted
-    -   **UniFrac** distances (unweighted / weighted / generalised)
+    -   **UniFrac** distances (un-weighted / weighted / generalised)
 
 ```{r}
 ps %>%
@@ -289,13 +227,12 @@ ps %>%
 ### Dissimilarity or distance?
 
 -   These terms are often used interchangeably
--   You will find dissimilarities in a distance matrix
+-   You will find "dissimilarities" in a "distance" matrix
 -   But if you want to be pedantic a true "distance metric" d, must satisfy 3 properties:
     1.  Identity of indiscernibles: For any samples $x$ and $y$, $d(x, y) = 0$ if and only if $x = y$
     2.  Symmetry: For any samples $x$ and $y$, $d(x, y) = d(y, x)$
     3.  Triangle inequality: For any samples $x$, $y$, and $z$, $d(x, z) ≤ d(x, y) + d(y, z)$
--   
-    (3) can be interpreted as: "the direct path between two points must be at least as short as any detour"
+-   \(3\) can be interpreted as: "the direct path between two points must be at least as short as any detour"
 -   This is not true for e.g. Bray-Curtis, but in practice it is very rarely problematic.
 :::
 
@@ -857,7 +794,54 @@ ps %>%
 -   differential abundance testing: stringent filtering, prevalence \>5%, \>10%?
 :::
 
-------------------------------------------------------------------------
+## More bar charts
+
+-   Stacked compositional bar charts using the `microViz` package, `comp_barplot()` function.
+-   Let's start with a smaller subset of the data, just the control group.
+
+::: callout-tip
+### Tip: filtering phyloseq samples
+
+We can filter the samples like this, using the sample_data information
+
+```{r}
+ps %>% ps_filter(case_control == "Control") # similar to a dplyr filter!
+```
+
+If you forget a variable's levels, check with `table()` or `unique()`
+
+```{r}
+ps@sam_data$case_control %>% table()
+```
+:::
+
+```{r, fig.width=5, fig.height=7, fig.align='center', out.width="70%"}
+ps %>%
+  ps_filter(case_control == "Control") %>% 
+  comp_barplot("Family", n_taxa = 10, merge_other = FALSE) +
+  coord_flip() +
+  ggtitle("Control participants")
+```
+
+### Organising your bar charts
+
+-   Let's look at all of the data from all diagnosis groups.
+-   We can add the ggplot2 `facet_wrap()` to our plot, to separate the groups.
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+ps %>% 
+  comp_barplot("Family", n_taxa = 10, merge_other = FALSE) +
+  facet_wrap(facets = vars(diagnosis), scales = "free") +
+  coord_flip() 
+```
+
+::: {.callout-note collapse="true"}
+### More bar chart resources:
+
+More examples/tutorial of visualizing microbiota compositions using stacked bar charts can be found here: <https://david-barnett.github.io/microViz/articles/web-only/compositions.html>
+:::
 
 ## Taxon stats
 
