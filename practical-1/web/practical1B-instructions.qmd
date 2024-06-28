@@ -65,9 +65,9 @@ After that, we'll take a look at some specialist R packages for microbiome analy
 
 ## Learning goals 💪
 
-- Practice general R skills to inspect microbiota count data and taxonomy
-- Gain basic familiarity with specialist microbiome R packages: `phyloseq` and `microViz` 
-- Learn to calculate, visualise, and interpret standard richness and diversity indices: Observed Richness and (Effective) Shannon diversity
+-   Practice general R skills to inspect microbiota count data and taxonomy
+-   Gain basic familiarity with specialist microbiome R packages: `phyloseq` and `microViz`
+-   Learn to calculate, visualise, and interpret standard richness and diversity indices: Observed Richness and (Effective) Shannon diversity
 
 ## Load R packages 📦
 
@@ -411,11 +411,10 @@ This plot is aggregated into genera, which provides more detail, but is harder t
 
 We see that many samples contain a relatively large proportion of *Bacteroides* or *Faecalibacterium* but there is quite some further variation!
 
-
-::: {.callout-note collapse="false"}
+::: {.callout-note collapse="true"}
 ### `tax_fix()` ?
 
-**Filling gaps in the taxonomy table** 
+**Filling gaps in the taxonomy table**
 
 -   You might have noticed that the taxonomy table has some `NA` values.
 -   This often occurs when a sequence cannot be uniquely classified at the Genus level.
@@ -449,7 +448,6 @@ Check the first few taxa now look correct?
 ```{r}
 #
 ```
-
 :::
 
 ## Discover diversity 🌳🌲🌴
@@ -486,7 +484,7 @@ ps_alpha <- ps %>%
 
 ### Shannon diversity
 
-Next we will calculate the Shannon diversity index at the level of Genus. 
+Next we will calculate the Shannon diversity index at the level of Genus.
 
 -   The Shannon index is a commonly used diversity measure, with this formula: $H = -\sum_{i=1}^Np_i\ln p_i$
 -   Shannon index is often is denoted with $H$, and here $p_i$ denotes the proportional abundance of the $i$'th of $N$ taxa in the sample.
@@ -502,7 +500,6 @@ Next we will calculate the Shannon diversity index at the level of Genus.
 
 We will also compute an exponentiated version, the effective number of genera, or effective Shannon index.
 
-
 ::: {.callout-note collapse="true"}
 #### Explanation of the **Effective** Shannon Diversity
 
@@ -514,7 +511,6 @@ The exponent of the Shannon index $e^H$ represents the number of taxa (genera) t
 -   If your original ecosystem was actually perfectly even, then $e^H = N$
 -   Where N is the observed richness
 -   The more uneven an ecosystem, the further $e^H$ will be from $N$
-
 :::
 
 ```{r}
@@ -532,8 +528,8 @@ ps_alpha %>% samdat_tbl() %>% select(sample, Shannon_Genus, Effective_Shannon_Ge
 ```
 
 ### Diversity Distributions
-::: panel-tabset
 
+::: panel-tabset
 ##### Observed Richness
 
 ```{r, fig.width=6, out.width="70%"}
@@ -551,7 +547,6 @@ ps_alpha %>% samdat_tbl() %>% pull(Shannon_Genus) %>% hist(main = "Shannon Diver
 ```{r, fig.width=6, out.width="70%"}
 ps_alpha %>% samdat_tbl() %>% pull(Effective_Shannon_Genus) %>% hist(main = "Effective Number of Genera")
 ```
-
 :::
 
 ### Interpreting diversity
@@ -589,20 +584,18 @@ ps_alpha %>%
   ) +
   coord_flip()
 ```
-
 :::
 
 ## Next! ⏩
 
-- Its time to stop exploring and take a break. 
-- In the next lecture you will learn more about the main approaches for microbiota data analysis.
-- In the next practical session, we will come back to these data with a plan, an analysis plan!
-- Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html>
+-   Its time to stop exploring and take a break.
+-   In the next lecture you will learn more about the main approaches for microbiota data analysis.
+-   In the next practical session, we will come back to these data with a plan, an analysis plan!
+-   Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html>
 
 ```{r, include=FALSE}
 saveRDS(ps, file = here("data", "papa2012", "processed", "papa12_phyloseq.rds"))
 ```
-
 
 ## Session info
 
