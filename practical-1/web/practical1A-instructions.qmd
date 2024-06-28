@@ -208,22 +208,6 @@ table(meta$age_years, useNA = "ifany")
 :::
 :::
 
-<!-- Now look at the taxonomy table. Why are there NAs? -->
-
-<!-- ```{r} -->
-
-<!-- taxonomy -->
-
-<!-- ``` -->
-
-<!-- Now look at the count table. Which parts of these two dataframes are the same? (meta and counts) -->
-
-<!-- ```{r} -->
-
-<!-- counts -->
-
-<!-- ``` -->
-
 ### Summarise 📋
 
 You can count the number of times a category occurs, similar to the table function.

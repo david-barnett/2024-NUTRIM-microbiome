@@ -1,8 +1,12 @@
-## Instructions / links
+## General links
+
+[Timetable on Google sheets](https://docs.google.com/spreadsheets/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing)
 
 posit.cloud free account signup - <https://posit.cloud/plans/free>
 
 This readme as webpage - <https://david-barnett.github.io/2024-NUTRIM-microbiome/readme.html>
+
+## Practical Instructions
 
 #### Practical 1
 
