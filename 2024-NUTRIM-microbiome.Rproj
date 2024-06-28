@@ -18,3 +18,5 @@ StripTrailingWhitespace: Yes
 UseNativePipeOperator: No
 
 QuitChildProcessesOnExit: Yes
+
+MarkdownWrap: None
