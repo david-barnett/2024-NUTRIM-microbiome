@@ -3,18 +3,19 @@ title: "Practical 1B - microbiota data"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
 author: David Barnett
 date: last-modified
+format: html
 keep-md: false
 theme: 
   light: flatly
   dark: darkly
-format: html
+css: ../../.css/instructions.css
 embed-resources: true
 code-block-border-left: true
 code-block-bg: true
 toc: true
 toc-location: right
 toc-depth: 4
-toc-expand: 3
+toc-expand: 1
 number-sections: true
 number-depth: 3
 fig-align: center
@@ -36,7 +37,7 @@ Now we're going to look at the microbiota data, from the same Papa et al. 2012 s
 ::: {.callout-note collapse="true"}
 ### A note on sequence data processing
 
-These data have already been processed into a table, counts of how often each sequence occurs in each sample.
+These data have already been processed into a table: counts of how often each sequence occurs in each sample.
 
 It started as huge fastq text files, full of As, Cs, Ts and Gs, but we will not practice sequence data processing today, because it takes quite a long time to run.
 
@@ -52,14 +53,11 @@ And as you will see later today, the same approaches can also be applied to taxo
 First we're going to use the R skills we practised in part A to inspect this data.
 
 ::: {.callout-note collapse="true" appearance="simple"}
-### SOLUTION: (read me?)
+### SOLUTION: (click me?)
 
 -   In this practical, solution blocks like this are available...
-
 -   But try and write code independently before looking at the answer!
-
 -   Attempting to recall knowledge or solve problems is proven to enhance learning.
-
 -   So don't look unless you're really stuck! 💪
 :::
 
@@ -274,6 +272,8 @@ In the next section of this practical, we will explore smarter ways to analyse m
 :::
 :::
 
+------------------------------------------------------------------------
+
 ## Assemble a phyloseq 🛠️
 
 So far we have not used any R packages specialised for microbiome data.
@@ -410,6 +410,47 @@ ps %>% tax_fix() %>% comp_barplot("Genus", n_taxa = 11, merge_other = F, label =
 This plot is aggregated into genera, which provides more detail, but is harder to read, and we cannot give every genus a distinct colour.
 
 We see that many samples contain a relatively large proportion of *Bacteroides* or *Faecalibacterium* but there is quite some further variation!
+
+
+::: {.callout-note collapse="false"}
+### `tax_fix()` ?
+
+**Filling gaps in the taxonomy table** 
+
+-   You might have noticed that the taxonomy table has some `NA` values.
+-   This often occurs when a sequence cannot be uniquely classified at the Genus level.
+-   The short 16S amplicon sequenced may only allow a unique classification at Family rank, or above.
+
+```{r}
+tt_get(ps) %>% as.data.frame() %>% filter(is.na(Genus)) %>% head(3)
+```
+
+-   We need to fill those gaps! and we can do this with `tax_fix()`, which copies info down from a higher rank to fill the gaps.
+-   It often works fine with default settings, but sometimes there are more complicated taxonomy table problems
+-   To look at and fix the taxonomy table interactively, try `tax_fix_interactive(ps)` in the console
+-   (You may need to allow popups on your browser!)
+
+::: {.callout-warning collapse="false"}
+### Press Stop!
+
+Running `tax_fix_interactive(ps)` will open a new web browser tab.
+
+When you are done looking, click the **red STOP 🛑 button in the R console**!
+:::
+
+Let's update our `ps` phyloseq object with the default fix.
+
+```{r}
+ps <- tax_fix(ps)
+```
+
+Check the first few taxa now look correct?
+
+```{r}
+#
+```
+
+:::
 
 ## Discover diversity 🌳🌲🌴
 

@@ -3,18 +3,19 @@ title: "Practical 2 - microbiota analyses walkthrough"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
 author: David Barnett
 date: last-modified
+format: html
 keep-md: false
 theme: 
   light: flatly
   dark: darkly
-format: html
+css: ../../.css/instructions.css
 embed-resources: true
 code-block-border-left: true
 code-block-bg: true
 toc: true
 toc-location: right
 toc-depth: 4
-toc-expand: 3
+toc-expand: 1
 number-sections: true
 number-depth: 3
 fig-align: center
@@ -62,41 +63,6 @@ Read the phyloseq we created in part 1.
 ```{r}
 ps <- read_rds(file = here("data/papa2012/processed/papa12_phyloseq.rds"))
 ```
-
-### Filling gaps in the taxonomy table
-
--   You might have noticed that the taxonomy table has some `NA` values.
--   This often occurs when a sequence cannot be uniquely classified at the Genus level.
--   The short 16S region sequenced may only allow a unique classification at Family rank or above.
-
-```{r}
-tt_get(ps) %>% as.data.frame() %>% filter(is.na(Genus)) %>% head()
-```
-
--   We need to fill those gaps! and we can do this with `tax_fix()`, which copies info down from a higher rank to fill the gaps.
--   It often works fine with default settings, but sometimes there are more complicated taxonomy table problems
--   To look at and fix the taxonomy table interactively, try `tax_fix_interactive(ps)` in the console (You may need to allow popups on your browser!)
-
-::: callout-warning
-### Press Stop!
-
-Running `tax_fix_interactive(ps)` will open a new web browser tab.
-
-When you are done looking, click the **red STOP 🛑 button in the R console**!
-:::
-
-Let's update our `ps` phyloseq object with the default fix.
-
-```{r}
-ps <- tax_fix(ps, verbose = FALSE)
-```
-
-Check the first few taxa now look correct?
-
-```{r}
-#
-```
-
 
 ------------------------------------------------------------------------
 
