@@ -330,7 +330,6 @@ ggplot(meta) +
   ggtitle("Practice bar chart") +
   theme_bw()
 ```
-
 :::
 
 ::: {#tip-ggplot .callout-tip collapse="true"}
