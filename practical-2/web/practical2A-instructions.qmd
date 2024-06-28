@@ -94,48 +94,6 @@ ps %>%
   ggtitle("Control participants")
 ```
 
-::: {.callout-tip collapse="true"}
-### Tip: `ggsave` to save ~~the day~~ your plots? 🦸📊💾
-
--   Viewing your plots in the RStudio Plots window is okay for practice
--   But don't copy paste them to save them, as there is a much better way!
-
-```{r}
-# Assign your plot to an R object
-control_barplot <- ps %>%
-  ps_filter(case_control == "Control") %>% 
-  comp_barplot("Family", n_taxa = 10, merge_other = FALSE) +
-  coord_flip() +
-  ggtitle("Control participants")
-
-# create a folder for figures
-dir.create(here("practical-2/figs"))
-
-# Write the plot to a file, with ggsave
-ggsave(
-  plot = control_barplot, filename = here("practical-2/figs/control_bars.png"),
-  width = 6.5, height = 6.5, units = "in", dpi = 300
-)
-```
-
-```{r, include=FALSE}
-unlink(here("practical-2/figs"), recursive = TRUE)
-```
-
-**Be sure to carefully adjust the sizing and resolution of your plots for your paper or presentation!**
-:::
-
-::: {.callout-tip collapse="true"}
-### Tip: Sizing plots in Quarto reports 📏📊📄
-
--   Again, viewing your plots in the RStudio Plots window is only okay for practice.
--   If you're using Quarto reports, you can specify figure size and resolution in each chunk
-
-e.g.
-
-TODO display example chunk options examples directly in instructions - look up how to do this in quarto website
-:::
-
 ### Organising your bar charts
 
 -   Let's look at all of the data from all diagnosis groups.

@@ -259,16 +259,6 @@ meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
 ggplot2 is a popular and powerful plotting package.
 
 ::: panel-tabset
-#### Bar chart
-
-```{r}
-#| fig-width: 8
-#| fig-height: 3
-ggplot(meta) +
-  geom_bar(aes(y = diagnosis, fill = active)) +
-  theme_bw()
-```
-
 #### Histogram
 
 ```{r}
@@ -279,6 +269,68 @@ ggplot(meta) +
   facet_wrap(~case_control, ncol = 1) +
   theme_minimal()
 ```
+
+#### Bar chart
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3
+ggplot(meta) +
+  geom_bar(aes(y = activity, fill = diagnosis)) +
+  theme_bw()
+```
+:::
+
+::: {#tip-ggsave .callout-tip collapse="true"}
+### `ggsave` to save your plots? 🦸📊💾
+
+-   Viewing your plots in RStudio is okay for practice
+-   But don't copy paste them to save them, as there is a much better way!
+
+```{r}
+# Assign your plot to an R object
+plot_practice_bars <- ggplot(meta) +
+  geom_bar(aes(y = activity, fill = diagnosis)) +
+  ggtitle("Practice bar chart") +
+  theme_bw()
+
+# create a folder for figures
+dir.create(here("practical-1/figs"))
+
+# Write the plot to a file, with ggsave
+ggsave(
+  plot = plot_practice_bars, 
+  filename = here("practical-1/figs/practice-barchart.png"),
+  width = 6, height = 3, units = "in", dpi = 300
+)
+```
+
+```{r, include=FALSE}
+unlink(here("practical-1/figs"), recursive = TRUE)
+```
+
+**Be sure to carefully adjust the sizing and resolution of your plots for your paper or presentation!**
+:::
+
+::: {#tip-fig-quarto .callout-tip collapse="true"}
+### Sizing plots in Quarto reports 📏📊📄
+
+-   Again, viewing your plots in the RStudio is only okay for practice.
+-   If you're using Quarto reports, you can specify figure size and resolution in each chunk
+
+e.g.
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+#| echo: fenced
+
+ggplot(meta) +
+  geom_bar(aes(y = activity, fill = diagnosis)) +
+  ggtitle("Practice bar chart") +
+  theme_bw()
+```
+
 :::
 
 ::: {#tip-ggplot .callout-tip collapse="true"}
