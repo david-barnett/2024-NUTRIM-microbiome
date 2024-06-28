@@ -38,12 +38,23 @@ More refinement and restructuring is planned.
 
 ## Research questions 💪
 
-1.  **Primary aim:** Does the bacterial gut microbiota composition of IBD-diagnosed patients differ from the control patients?
+1.  **Primary aim:** \
+    Does the bacterial gut microbiota composition of IBD-diagnosed patients differ from the control patients?
     a.  **Diversity:** Is richness or diversity associated with IBD diagnosis?
     b.  **Composition:** Does overall bacterial microbiota composition associated with IBD diagnosis?
     c.  **Taxa:** Is the relative abundance of specific bacterial taxa (e.g. genera) associated with IBD diagnosis?
-2.  **Activity:** Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
-3.  **Medication:** Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+2.  **Secondary aims** (see part 2B):
+    a.  **Activity:** Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+    b.  **Medication:** Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+
+## Outline of Part 2A
+
+1.  Alpha diversity - simple stats
+2.  Overall compositions
+    1.  Interactive ordination plots and bar charts
+    2.  PCoA and PERMANOVA
+    3.  Bar charts
+3.  Differential abundance testing
 
 ## Load R packages 📦
 
@@ -118,23 +129,22 @@ More examples/tutorial of visualizing microbiota compositions using stacked bar 
 
 ## ⚖️ Ecosystem diversity
 
--   How rich and diverse is the bacterial microbiota of each sample?\
+Our research questions for this section are:
+
+-   How rich and diverse is the bacterial microbiota of each sample?
 -   Does this richness or diversity differ by diagnosis group?
 
 ### Richness
 
 -   The simplest richness measure is just counting, a.k.a. "Observed Richness".
--   Let's compute the observed richness of genera.
--   Note: `ps_calc_richness()` computes the index for each sample and adds it to your sample_data
-
-```{r}
-ps <- ps_calc_richness(ps, rank = "Genus", index = "observed", varname = "N_genera")
-```
+-   We already computed the observed richness of genera in part 1B.
 
 ::: panel-tabset
 #### Plot
 
 ```{r}
+#| fig-height: 3
+#| fig-width: 5
 ps %>% 
   samdat_tbl() %>% 
   ggplot(aes(x = N_genera, y = diagnosis, color = diagnosis)) + 
@@ -145,45 +155,52 @@ ps %>%
 
 #### Linear regression / ANOVA
 
-TODO decide what to show exactly - posthoc tests after anova? or lm coefficients
+You can use standard statistical testing on the richness or diversity values e.g. linear regression
 
 ```{r}
 richness_lm <- lm(data = samdat_tbl(ps), formula = N_genera ~ diagnosis)
 anova(richness_lm)
 ```
 
-Get a tidy tibble of results with the `tidy()` function from `broom` package.
+You can get a tidy tibble of results with the `tidy()` function from `broom` package.
 
 ```{r}
 richness_stats <- broom::tidy(anova(richness_lm))
 richness_stats
 ```
 
-TODO add posthoc pairwise comparisons
+You could do also standard ANOVA post-hoc pairwise comparisons.
 
 ```{r}
-# TODO posthoc
+richness_tukey <- TukeyHSD(aov(richness_lm))
+richness_tukey
+```
+
+```{r}
+summary(richness_lm)
 ```
 
 #### `ggstatsplot`
 
-Combine stats and plots in one go with ggstatsplot betweenstats
+Combine group comparison stats and plots in one go with `ggstatsplot::ggbetweenstats()`
 
 ```{r}
-# TODO
+library(ggstatsplot)
+ggbetweenstats(
+  data = samdat_tbl(ps), x = diagnosis, y = N_genera, 
+  type = "parametric", p.adjust.method = "fdr", var.equal = TRUE, 
+  bf.message = FALSE, results.subtitle = TRUE
+)
+
 ```
 :::
 
 ### Diversity
 
--   A true measure of ecosystem diversity (e.g. Shannon index) will consider the richness and evenness of the ecosystem.
--   Remember: a rich ecosystem predominated by one taxon is still intuitively a less diverse ecosystem than one with an even distribution of the same number of taxa.
--   We will use the effective Shannon diversity of genera $e^H$ - because of its more intuitive interpretation.
-
-```{r}
-ps <- ps_calc_diversity(ps, rank = "Genus", index = "shannon", varname = "Shannon_Genus")
-ps <- ps %>% ps_mutate(Effective_Shannon_Genus = exp(Shannon_Genus))
-```
+-   Remember: a true measure of ecosystem diversity (e.g. Shannon index) will consider the richness and evenness of the ecosystem.
+-   A rich ecosystem predominated by one taxon is still intuitively a less diverse ecosystem than one with an even distribution of the same number of taxa.
+-   We already computed Shannon diversity of genera and the effective Shannon in part 1B.
+-   Here we will use the effective Shannon diversity $e^H$ - because of its more intuitive interpretation.
 
 ::: panel-tabset
 #### Plot

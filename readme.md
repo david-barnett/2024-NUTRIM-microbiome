@@ -18,10 +18,10 @@ posit.cloud free account signup - <https://posit.cloud/plans/free>
 
 #### Practical 2
 
--   Work in progress\
-    [https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1B-instructions.html)
+-   Part 2A: Work in progress\
+    [https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2A-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1B-instructions.html)
 
--   
+-   Part 2B: Work in progress
 
 #### Practical 3
 
