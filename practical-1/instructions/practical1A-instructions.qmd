@@ -3,11 +3,12 @@ title: "Practical 1A - R fundamentals"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
 author: David Barnett
 date: last-modified
+format: html
 keep-md: false
 theme: 
   light: flatly
   dark: darkly
-format: html
+css: ../../.css/instructions.css
 embed-resources: true
 code-block-border-left: true
 code-block-bg: true
@@ -26,6 +27,7 @@ code-tools: true
 code-fold: false
 code-link: false
 lightbox: auto
+cache: true
 ---
 
 ## Learning goals 💪
@@ -542,8 +544,7 @@ table(all_meta$medication, useNA = "if")
 table(all_meta$immunosuppression_level, useNA = "if")
 ```
 
-We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that.
-We will also replace Controls' immunosuppression_level NA values with "none".
+We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that. We will also replace Controls' immunosuppression_level NA values with "none".
 
 ```{r}
 all_meta <- all_meta %>% mutate(
@@ -555,7 +556,7 @@ all_meta <- all_meta %>% mutate(
 all_meta %>% select(ID, case_control, medication, immunosuppression_level)
 ```
 
-We now want logical variables indicating if the patient recently had antibiotics (abx), steroids, or other immunosuppressive drugs (imsp). 
+We now want logical variables indicating if the patient recently had antibiotics (abx), steroids, or other immunosuppressive drugs (imsp).
 
 ```{r}
 all_meta <- all_meta %>% mutate(
@@ -571,8 +572,7 @@ all_meta <- all_meta %>% mutate(
 
 For the character variables with more than two values, we can convert them to factors, to encode our preferred ordering of their levels.
 
-In R stats methods, the 1st level of a factor is often used as the reference level by default.
-So we should keep this in mind, and typically set control levels as the 1st factor level. We can always temporarily change this for plots.
+In R stats methods, the 1st level of a factor is often used as the reference level by default. So we should keep this in mind, and typically set control levels as the 1st factor level. We can always temporarily change this for plots.
 
 ```{r}
 all_meta <- all_meta %>% mutate(
@@ -592,7 +592,6 @@ all_meta <- all_meta %>% mutate(
   ))
 )
 ```
-
 
 ## Save your progress 💾
 
@@ -625,13 +624,13 @@ saveRDS(all_meta, here(output_path, "all_metadata.rds"))
 
 ## Next! ⏩
 
-- We have recapped some R fundamentals and introduced the sample metadata.
+-   We have recapped some R fundamentals and introduced the sample metadata.
 
-- Next we will start working with microbiome data! 
+-   Next we will start working with microbiome data!
 
-- Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/instructions/practical1B-instructions.html>
+-   Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/instructions/practical1B-instructions.html>
 
-## Session info 
+## Session info
 
 For reproducibility, it is useful to record the packages and versions used in your analyses. This is easy to do with `sessioninfo::session_info()`.
 

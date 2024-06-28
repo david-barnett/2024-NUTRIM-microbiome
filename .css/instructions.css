@@ -1,0 +1,14 @@
+
+h2 {
+  margin-top: 5rem; /* Adjust this value for desired whitespace above bar */
+    padding-top: 1.5rem; /* Adjust this value for whitespace between bar and text */
+    border-top: 2px solid #808080; /* Adds a horizontal bar above h2 */
+}
+
+h3 {
+  margin-top: 2rem;
+}
+
+#toc-title {
+  border-top: none;
+}

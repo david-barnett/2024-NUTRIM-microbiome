@@ -58,7 +58,6 @@ How do we read a table of data from a file, e.g. an Excel file?
 meta <- 
 ```
 
-
 ## Inspecting data {#inspecting-data}
 
 ### Look at the tables 👀
@@ -68,7 +67,6 @@ Look at the metadata.
 ```{r}
 
 ```
-
 
 ### Summarise 📋
 
@@ -100,7 +98,6 @@ meta %>%
 
 R's base graphics can be used to quickly summarise data distributions.
 
-
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
@@ -108,7 +105,6 @@ meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
 
 meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
 ```
-
 
 ggplot2 is a popular and powerful plotting package.
 
@@ -128,9 +124,8 @@ ggplot(meta) +
 ggplot(meta) + 
   
 ```
+
 :::
-
-
 
 ## Joining data 🟧+️🟪 {#joining-dataframes}
 
@@ -171,7 +166,6 @@ What happened with the Control group? (remember they were not present in `meds`!
 
 Inspect the `all_meta` dataframe to find out! e.g. `View(all_meta)`
 
-
 ## Mutating data 🧬? {#mutating-data}
 
 Often, you need to modify your variables, or create new ones.
@@ -180,7 +174,6 @@ Often, you need to modify your variables, or create new ones.
 
 1.  Apply a function/transformation to an existing variable (or multiple variables).
 2.  Assign the result to a new variable, or overwrite the original variable.
-
 
 #### Base R 🤖
 
@@ -206,11 +199,9 @@ all_meta <- all_meta %>% mutate(
 
 ```
 
-
 ### Temporary or persistent?
 
 We can convert character string variables to factor variables to specify an ordering of their levels (e.g. for plotting).
-
 
 You can temporarily mutate a dataframe and use the result. This is easy with pipes.
 
@@ -228,7 +219,6 @@ Notice this did NOT persistently modify the diagnosis variable, it is still "cha
 ```{r}
 class(all_meta$diagnosis) # no persistent changes, diagnosis is still character!
 ```
-
 
 `mutate` returns a modified dataframe and you must assign this to an object for changes to persist.
 
@@ -252,14 +242,13 @@ table(all_meta$medication, useNA = "if")
 table(all_meta$immunosuppression_level, useNA = "if")
 ```
 
-We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that.
-We will also replace Controls' immunosuppression_level NA values with "none".
+We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that. We will also replace Controls' immunosuppression_level NA values with "none".
 
 ```{r}
 
 ```
 
-We now want logical variables indicating if the patient recently had antibiotics (abx), steroids, or other immunosuppressive drugs (imsp). 
+We now want logical variables indicating if the patient recently had antibiotics (abx), steroids, or other immunosuppressive drugs (imsp).
 
 ```{r}
 
@@ -276,16 +265,14 @@ all_meta <- all_meta %>% mutate(
 
 ## Next! ⏩
 
-- We have recapped some R fundamentals and introduced the sample metadata.
+-   We have recapped some R fundamentals and introduced the sample metadata.
 
-- Next we will start working with microbiome data! 
+-   Next we will start working with microbiome data!
 
-
-## Session info 
+## Session info
 
 For reproducibility, it is useful to record the packages and versions used in your analyses. This is easy to do with `sessioninfo::session_info()`.
 
 ```{r}
 sessioninfo::session_info()
 ```
-
