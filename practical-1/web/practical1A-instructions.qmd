@@ -30,37 +30,59 @@ lightbox: auto
 cache: true
 ---
 
-## Learning goals 💪
+## Introduction
 
--   [Using Quarto](#using-quarto)
--   [Reading tabular data](#reading-data)
--   [Inspecting data](#inspecting-data)
--   [Joining dataframes](#joining-dataframes)
--   [Mutating dataframes](#mutating-data)
+### Learning goals 🧠
 
-## Using Quarto 📝 {#using-quarto}
+-   Using Quarto
+-   Reading tabular data
+-   Inspecting data
+-   Joining data frames
+-   Mutating data frames
 
-During this workshop, we will write code and notes in [Quarto documents](https://r4ds.hadley.nz/quarto){target="_blank"}.
+### Getting started 🚀
 
-Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
+In this workshop we will use an online version of [RStudio](https://posit.co/download/rstudio-desktop/ "RStudio is an application where you write and run R code"){target="_blank"} - via [posit.cloud](https://posit.cloud/spaces/526847 "Posit Cloud provides a cloud server to run and share RStudio projects"){target="_blank"}
+
+1.  [Sign up for a free posit.cloud account](https://posit.cloud/spaces/526847){target="_blank"} \
+    (use a GitHub or Google account if you already have one of these)
+
+2.  Check your email for a link to join the posit.cloud space for this course
+
+3.  Click on the **2024-NUTRIM-microbiome** project - this will start RStudio
+
+4.  Go to **Files** (look bottom right) \> click folder `practical-1` \> open file `practical-1A-notebook.qmd`
+
+### Using Quarto 📝
+
+We will write code and notes in [Quarto](https://r4ds.hadley.nz/quarto){target="_blank"} `.qmd` documents, e.g. `practical-1A-notebook.qmd`
+
+You can write normal text for notes, e.g. your intentions, hypotheses, observations, etc.
 
 ```{r}
-# write code in "chunks" (and comments too, using the # symbol)
-print("Hello World")
+# You can write code and comments in "chunks" 
+print("Hello World") # start "comments" with the # symbol
 ```
 
-Insert a chunk with ctrl/cmd + shift + I
+1.  Insert a code chunk with `Ctrl`+`Alt`+`I` (Windows) or `Cmd`+`Option`+`I` (Mac).
+
+2.  Run the current chunk by clicking the green play button in the corner of the chunk
+
+3.  Run all previous chunks by clicking the other button in the corner of the chunk
 
 ```{r, eval=FALSE}
-print("Run this one line with ctrl + enter, or cmd + enter on macOS")
-print("or run a whole chunk with ctrl/cmd + SHIFT + enter")
+# How to run code with keyboard shortcuts?
+print("Run this one line with Ctrl + Enter, or Cmd + Enter on Mac")
+print("or run a whole chunk with Ctrl/Cmd + SHIFT + Enter")
 ```
 
-Run all previous chunks by clicking the first button in the corner of the chunk
+To edit your Quarto notebooks in RStudio you can use "[Visual](https://quarto.org/docs/visual-editor/){target="_blank"}" editor mode, or the "Source" mode.
+
+*Toggle between modes at the top left. Visual editor is easier for beginners, but Source mode shows how the Quarto file truly looks (it only contains [markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"} text, but RStudio adds formatting in Visual mode).*
 
 ## Load R packages 📦
 
-It is good practice to load all the packages you need at the top of your notebook.
+It is a good idea to load all the packages you need at the top of your notebook.
 
 ```{r}
 # `readxl` is for reading data from Excel files
@@ -68,8 +90,8 @@ library(readxl)
 ```
 
 ```{r}
-# `writexl` is for writing data to a new Excel file, we'll use this at the end.
-library(writexl)
+# `writexl` is for writing data to a new Excel file
+library(writexl) # we'll use this at the end
 ```
 
 ```{r}
@@ -78,8 +100,8 @@ library(here)
 ```
 
 ```{r}
-# `tidyverse` is a collection of several packages (dplyr, ggplot2, and others)
-library(tidyverse)
+# `tidyverse` is a collection of several packages 
+library(tidyverse) # (dplyr, ggplot2, and others)
 ```
 
 ## Reading data 📂 {#reading-data}
@@ -93,9 +115,9 @@ meds <- read_excel(here("data/papa2012/papa2012_metadata.xlsx"), sheet = "treatm
 ```
 
 ::: {#tip-paths .callout-tip collapse="false"}
-## Projects and portable filepaths
+## Projects and portable file paths
 
-There are multiple ways to tell R where to find the data files for this project.
+There are multiple ways to tell R where to find the data files for a project.
 
 ::: panel-tabset
 #### Projects + relative paths
@@ -157,7 +179,7 @@ meta <- read_excel(path = "data/papa2012/papa2012_metadata.xlsx", na = "NA")
 
 ### Look at the tables 👀
 
-Look at the metadata.
+Start by printing the metadata data frame, like this:
 
 ```{r}
 meta
@@ -169,11 +191,11 @@ meta
 ::: panel-tabset
 ##### dataframes & tibbles
 
--   A dataframe is the standard class of object for holding rectangular data (tables) in your R environment.
+A dataframe is the standard class of object for holding rectangular data (tables) in your R environment.
 
--   Columns of a dataframe can hold vectors of different classes, e.g. chr and int (characters and integers)
+Columns of a dataframe can hold vectors of different classes, e.g. chr and int (characters and integers)
 
--   (In contrast, a matrix can only hold one type of data!)
+(In contrast, a matrix can only hold one type of data!)
 
 ```{r}
 example_df <- data.frame(alphabet = LETTERS, numbers = 1:26)
@@ -677,3 +699,4 @@ sessioninfo::session_info()
 ```
 
 </details>
+
