@@ -19,14 +19,15 @@ toc-depth: 4
 toc-expand: 1
 number-sections: true
 number-depth: 3
-fig-dpi: 300
+fig-dpi: 200
 fig-width: 7.5
 fig-height: 5
 fig-responsive: true
 code-tools: true
 code-fold: false
-code-link: false
+code-link: true
 lightbox: auto
+link-external-icon: true
 cache: true
 ---
 
@@ -44,7 +45,7 @@ cache: true
 
 In this workshop we will use an online version of [RStudio](https://posit.co/download/rstudio-desktop/ "RStudio is an application where you write and run R code"){target="_blank"} - via [posit.cloud](https://posit.cloud/spaces/526847 "Posit Cloud provides a cloud server to run and share RStudio projects"){target="_blank"}
 
-1.  [Sign up for a free posit.cloud account](https://posit.cloud/spaces/526847){target="_blank"} \
+1.  [Sign up for a free posit.cloud account](https://posit.cloud/spaces/526847){target="_blank"}\
     (use a GitHub or Google account if you already have one of these)
 
 2.  Check your email for a link to join the posit.cloud space for this course
@@ -699,4 +700,3 @@ sessioninfo::session_info()
 ```
 
 </details>
-

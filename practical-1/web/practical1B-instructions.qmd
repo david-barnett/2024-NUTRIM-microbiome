@@ -19,7 +19,7 @@ toc-expand: 1
 number-sections: true
 number-depth: 3
 fig-align: center
-fig-dpi: 300
+fig-dpi: 200
 fig-width: 7.5
 fig-height: 5
 fig-responsive: true
@@ -27,6 +27,7 @@ code-tools: true
 code-fold: false
 code-link: true
 lightbox: auto
+link-external-icon: true
 cache: true
 ---
 

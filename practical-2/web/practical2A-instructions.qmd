@@ -19,7 +19,7 @@ toc-expand: 1
 number-sections: true
 number-depth: 3
 fig-align: center
-fig-dpi: 300
+fig-dpi: 200
 fig-width: 7.5
 fig-height: 5
 fig-responsive: true
@@ -27,6 +27,7 @@ code-tools: true
 code-fold: false
 code-link: true
 lightbox: auto
+link-external-icon: true
 cache: true
 ---
 
@@ -358,10 +359,13 @@ Strictly, all distances are dissimilarities, but not all dissimilarities are dis
 A true "distance metric" $d$, must satisfy 3 properties:
 
 1.  **Identity of indiscernibles**: For any samples $a$ and $b$, $d(a, b) = 0$ if and only if $a = b$
+
 2.  **Symmetry**: For any samples $a$ and $b$, $d(a, b) = d(b, a)$
+
 3.  **Triangle** **inequality**: For any samples $a$, $b$, and $c$, $d(a, c) ≤ d(a, b) + d(b, c)$
-    -   \(3\) can be interpreted as: "the direct path between two points must be at least as short as any detour"
-    -   \(3\) is not true for e.g. Bray-Curtis, but in practice it is very rarely problematic.
+
+    -   **3** means: "the direct path between two points must be at least as short as any detour"
+    -   **3** is not true for e.g. Bray-Curtis... but in practice this is very rarely problematic
 :::
 
 ::: {.callout-note collapse="true"}
@@ -391,13 +395,16 @@ range(as.matrix(distances))
 **Principal Co-ordinates Analysis is one kind of ordination:**
 
 -   PCoA takes a sample-sample distance matrix and finds new dimensions (a coordinate system)
+
 -   The new dimensions are created with the aim to preserve the original distances between samples
+
 -   It also aims to capture the majority of this distance information in the first dimensions
+
 -   This makes it easier to visualize the patterns in your data, in 2D scatterplots 👀
 
 **For more info, see "GUSTAME"**
 
-There is helpful info about ordination methods including PCoA on the GUide to STatistical Analysis in Microbial Ecology website (GUSTA ME). <https://sites.google.com/site/mb3gustame/dissimilarity-based-methods/principal-coordinates-analysis>
+There is helpful info about ordination methods, including PCoA, on the GUide to STatistical Analysis in Microbial Ecology website (GUSTA ME). <https://sites.google.com/site/mb3gustame/dissimilarity-based-methods/principal-coordinates-analysis>
 
 This website covers a lot of other topics too, which may be interesting for you to read at a later date if you'll work on microbiome analysis.
 :::
@@ -489,26 +496,6 @@ We will not discuss "constrained" or "conditioned" ordinations today:
 -   **Analysis of variance** - ANOVA (statistical modelling approach)
 
 ::: {.callout-note collapse="true"}
-##### More details on PERMANOVA
-
-See this excellent book chapter by Marti Anderson: [https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841](https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841){target="_blank"}
-
-Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA) e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova){target="_blank"}
-:::
-
-::: {.callout-note collapse="true"}
-##### Reporting PCoA and PERMANOVA methods
-
--   Your methodological choices matter, you should report what you did:
-    -   any relevant rare taxon filtering
-    -   the taxonomic rank of aggregation
-    -   the dissimilarity measure used to compute the pairwise distances
-    -   any covariates included in the statistical model (see next note)
-
-It's a good idea to decide on one or two distance measures *a priori*, and report both (at least in supplementary material).  The choice of distance measure can affect results and conclusions!
-:::
-
-::: {.callout-note collapse="true"}
 #### Covariate-adjusted PERMANOVA
 
 You can adjust for covariates in PERMANOVA, and often should, depending on your study design.
@@ -529,7 +516,29 @@ ps %>%
 Use more permutations for a more precise and reliable p.value in your real work (it is slower).
 
 Always set a *seed* number for reproducibility of this random permutation method!
+
 :::
+
+::: {.callout-note collapse="true"}
+##### Reporting PCoA and PERMANOVA methods
+
+-   Your methodological choices matter, you should report what you did:
+    -   any relevant rare taxon filtering
+    -   the taxonomic rank of aggregation
+    -   the dissimilarity measure used to compute the pairwise distances
+    -   any covariates included in the statistical model
+
+It's a good idea to decide on one or two distance measures *a priori*, and report both (at least in supplementary material).  The choice of distance measure can affect results and conclusions!
+:::
+
+::: {.callout-note collapse="false"}
+##### More details on PERMANOVA
+
+See this excellent book chapter by Marti Anderson: [https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841](https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841){target="_blank"}
+
+Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA) e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova){target="_blank"}
+:::
+
 
 ## PCA
 
