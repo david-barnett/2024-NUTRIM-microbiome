@@ -54,7 +54,7 @@ And as you will see later today, the same approaches can also be applied to taxo
 First we're going to use the R skills we practised in part 1A to inspect this data.
 
 ::: {.callout-note collapse="true" appearance="simple"}
-### SOLUTION: (click me?)
+### SOLUTION: Click me?
 
 -   In this practical, solution blocks like this are available...
 -   But try and write code independently before looking at the answer!
@@ -457,10 +457,6 @@ ps <- tax_fix(ps)
 ```
 
 Check the first few taxa now look correct?
-
-```{r}
-#
-```
 :::
 
 ## Discover diversity 🌳🌲🌴

@@ -35,24 +35,29 @@ cache: true
 
 **WORK IN PROGRESS** - More restructuring and refinement is planned.
 
-## Outline of Part 2
+## Outline of Part 2A
 
 ### Research questions
 
-1.  **Primary aim:**\
-    Does the bacterial gut microbiota composition of IBD-diagnosed patients differ from the control patients?
+#### **Primary aim:**
 
-    a.  **Diversity:** Is richness or diversity associated with IBD diagnosis?
+Does the bacterial gut microbiota composition of IBD-diagnosed patients differ from the control patients?
 
-    b.  **Composition:** Does overall bacterial microbiota composition associated with IBD diagnosis?
+-   **Diversity:** Is richness or diversity associated with IBD diagnosis?
 
-    c.  **Taxa:** Is the relative abundance of specific bacterial taxa (e.g. genera) associated with IBD diagnosis?
+-   **Composition:** Does overall bacterial microbiota composition associated with IBD diagnosis?
 
-2.  **Secondary aims** (see part 2B):
+-   **Taxa:** Is the relative abundance of specific bacterial taxa (e.g. genera) associated with IBD diagnosis?
 
-    a.  **Activity:** Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+::: {.callout-note collapse="true"}
+### Secondary aims (an extra challenge for part 2B)
 
-    b.  **Medication:** Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+**Activity:**\
+Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+
+**Medication:**\
+Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+:::
 
 ### Methods
 
@@ -145,10 +150,13 @@ ggbetweenstats(
 
 ### Diversity
 
--   **Remember:** a true measure of ecosystem diversity (e.g. Shannon index) will consider the richness *and evenness* of the ecosystem.
--   A rich ecosystem dominated by only one or two of its taxa is still a less diverse ecosystem than one with an **even** distribution of the same number of taxa.
--   We already computed Shannon diversity of genera and the effective Shannon in part 1B.
--   Here we will use the effective Shannon diversity $e^H$ - because of its more intuitive interpretation.
+**Remember:** a true measure of ecosystem diversity (e.g. Shannon index) will consider the richness *and evenness* of the ecosystem.
+
+> A rich ecosystem dominated by only one or two of its taxa is still a less diverse ecosystem than one with an **even** distribution of the same number of taxa.
+
+We already computed Shannon diversity of genera and the effective Shannon in part 1B.
+
+Here we will use the effective Shannon diversity $e^H$ because of its more intuitive interpretation.
 
 ::: panel-tabset
 #### Plot diversity
@@ -516,7 +524,6 @@ ps %>%
 Use more permutations for a more precise and reliable p.value in your real work (it is slower).
 
 Always set a *seed* number for reproducibility of this random permutation method!
-
 :::
 
 ::: {.callout-note collapse="true"}
@@ -538,7 +545,6 @@ See this excellent book chapter by Marti Anderson: [https://onlinelibrary.wiley.
 
 Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA) e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova){target="_blank"}
 :::
-
 
 ## PCA
 
