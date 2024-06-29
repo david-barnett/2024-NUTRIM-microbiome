@@ -577,7 +577,7 @@ Don't forget to look at the other tab, where the bars are labelled by their dive
 
 #### **Diversity:** Shannon Effective Number of Genera
 
-Now each sample is labelled with the effective Shannon diversity of genera ($e^H$) 
+Now each sample is labelled with the effective Shannon diversity of genera ($e^H$)
 
 Do you see the general relationship of $e^H$ with sample composition?
 

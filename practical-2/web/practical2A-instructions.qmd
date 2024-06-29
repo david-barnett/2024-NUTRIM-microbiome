@@ -1,5 +1,5 @@
 ---
-title: "Practical 2A - microbiota analyses walkthrough"
+title: "Practical 2A - microbiota analyses"
 subtitle: "2024 NUTRIM microbiome & metabolome workshop"
 author: David Barnett
 date: last-modified
@@ -47,12 +47,13 @@ cache: true
 
 ## Outline of Part 2A
 
-1.  Diversity
-    -   Compare diversity between groups
-2.  Dissimilarity
+1.  **Diversity**
+    -   Compare richness and diversity between groups
+2.  **Dissimilarity**
+    -   Create (interactive) ordination plots and bar charts
     -   Compare overall compositions between groups
-    -   (Interactive) ordination plots and bar charts
-3.  Differential abundance testing
+3.  **Differential abundance**
+    -   Compare relative abundance of individual taxa between groups
 
 ## Load R packages 📦
 
@@ -74,12 +75,12 @@ Read the phyloseq we created in part 1.
 ps <- read_rds(file = here("data/papa2012/processed/papa12_phyloseq.rds"))
 ```
 
-## ⚖️ Alpha diversity
+## Diversity
 
 Our research questions for this section are:
 
--   How rich and diverse is the bacterial microbiota of each sample?
--   Does this richness or diversity differ by diagnosis group?
+-   How rich and diverse is the gut bacterial microbiota of each patient?
+-   Does this gut microbiota richness or diversity differ by diagnosis group?
 
 ### Richness
 
@@ -194,46 +195,159 @@ ggbetweenstats(
 ```
 :::
 
-## Dissimilarity
+## Dissimilarity & Ordination
 
-### Dissimilarity measures
+Our research questions for this section are:
 
--   Calculating the dissimilarities between pairs of microbiome samples
--   We talked about these commonly-used dissimilarity measures in the lecture.
-    -   **Binary Jaccard** - presence/absence
-    -   **Bray-Curtis** - abundance-weighted
-    -   **UniFrac** distances (un-weighted / weighted / generalised)
+-   What gut bacterial microbiota compositions are present or common in this cohort?
+-   Does the average overall composition of the gut microbiota differ by patient diagnosis group?
+
+### Aggregate ➔ Calculate ➔ Ordinate
+
+In order to create a PCoA ordination - we need to first make two choices:
+
+-   At which taxonomic rank will we aggregate the counts? (for 16S data, this is usually Genus)
+-   Which dissimilarity measure to use when calculating the distance matrix?
+
+### Common dissimilarity measures
+
+You heard about several commonly-used dissimilarity measures in the lecture. In the sections below, we will calculate a distance matrix with each one, and use each to plot a PCoA and test for diagnosis group differences with PERMANOVA.
+
+::: panel-tabset
+#### Binary Jaccard
+
+An unweighted measure - based only on taxon presence or absence.
+
+You must remember to run a "binary" transform on your data before computing "jaccard" distance.
 
 ```{r}
-ps %>%
+psx_jaccard <- ps %>%
   tax_agg(rank = "Genus") %>%
   tax_transform("binary") %>% # converts counts to absence/presence: 0/1
   dist_calc(dist = "jaccard")
 ```
 
-::: {.callout-important collapse="true"}
-### "Binary" Jaccard `010101`
+::: panel-tabset
+##### Distance matrix
 
--   Remember to run a "binary" transform on your data before computing "jaccard" distance.
--   There is a quantitative form of the Jaccard distance, which is the default behaviour!
--   But the qualitative (presence/absence) version is mostly used in microbial ecology.
--   If you want an abundance-weighted ecological dissimilarity, use Bray-Curtis!
+```{r}
+psx_jaccard
+```
+
+##### PCoA plot
+
+```{r}
+psx_jaccard %>% 
+  ord_calc("PCoA") %>% 
+  ord_plot(colour = "diagnosis") +
+  stat_ellipse(aes(colour = diagnosis)) +
+  coord_equal()
+```
+
+##### PERMANOVA
+
+```{r}
+perm_jaccard <- psx_jaccard %>% dist_permanova(variables = "diagnosis")
+perm_get(perm_jaccard)
+```
 :::
 
--   We now have our pairwise dissimilarities! 🎉
--   A distance matrix is attached as an extra part on the original phyloseq object
+#### Bray-Curtis
+
+Bray-Curtis is an abundance-weighted dissimilarity measure.
+
+It is probably the most commonly used dissimilarity measure in microbiome research.
+
+```{r}
+psx_bray <- ps %>%
+  tax_agg(rank = "Genus") %>%
+  tax_transform("identity") %>% # the "identity" transform changes nothing
+  dist_calc(dist = "bray")
+```
+
+::: panel-tabset
+##### Distance matrix
+
+```{r}
+psx_bray
+```
+
+##### PCoA plot
+
+```{r}
+psx_bray %>% 
+  ord_calc("PCoA") %>% 
+  ord_plot(colour = "diagnosis") +
+  stat_ellipse(aes(colour = diagnosis)) +
+  coord_equal()
+```
+
+##### PERMANOVA
+
+```{r}
+perm_bray <- psx_bray %>% dist_permanova(variables = "diagnosis")
+perm_get(perm_bray)
+```
+:::
+
+#### UniFrac
+
+The phylogenetic distance family - has unweighted, weighted, and generalised versions.
+
+You must use ASV-level data (i.e. no taxonomic aggregation) and have a phylogenetic tree available.
+
+We will not practice with UniFrac distances today, because they can be quite slow to calculate.
+
+![](images/cartoon-phylo.png){fig-alt="Cartoon illustration of phylogenetic tree from: https://www.azolifesciences.com/article/What-is-Molecular-Phylogenetics.aspx"}
+
+#### Aitchison
+
+The Aitchison distance is a CoDA distance method - named after John Aitchison, a pioneer in the field of Compositional Data analysis. related to CLR + PCA.
+
+```{r}
+psx_aitchison <- ps %>%
+  tax_agg(rank = "Genus") %>%
+  tax_transform("identity") %>% # the "identity" transform changes nothing
+  dist_calc(dist = "aitchison")
+```
+
+::: panel-tabset
+##### Distance matrix
+
+```{r}
+psx_aitchison
+```
+
+##### PCoA plot
+
+```{r}
+psx_aitchison %>% 
+  ord_calc("PCoA") %>% 
+  ord_plot(colour = "diagnosis") +
+  stat_ellipse(aes(colour = diagnosis)) +
+  coord_equal()
+```
+
+##### PERMANOVA
+
+```{r}
+perm_aitchison <- psx_aitchison %>% dist_permanova(variables = "diagnosis")
+perm_get(perm_aitchison)
+```
+:::
+:::
 
 ::: {.callout-note collapse="true"}
-### Dissimilarity or distance?
+#### Dissimilarity or distance?
 
 -   These terms are often used interchangeably
--   You will find "dissimilarities" in a "distance" matrix
--   But if you want to be pedantic a true "distance metric" d, must satisfy 3 properties:
-    1.  Identity of indiscernibles: For any samples $x$ and $y$, $d(x, y) = 0$ if and only if $x = y$
-    2.  Symmetry: For any samples $x$ and $y$, $d(x, y) = d(y, x)$
-    3.  Triangle inequality: For any samples $x$, $y$, and $z$, $d(x, z) ≤ d(x, y) + d(y, z)$
+-   Strictly: All distances are dissimilarities, but not all dissimilarities are distances.
+-   A true "distance metric" $d$, must satisfy 3 properties:
+    1.  **Identity of indiscernibles**: For any samples $a$ and $b$, $d(a, b) = 0$ if and only if $a = b$
+    2.  **Symmetry**: For any samples $a$ and $b$, $d(a, b) = d(b, a)$
+    3.  **Triangle** **inequality**: For any samples $a$, $b$, and $c$, $d(a, c) ≤ d(a, b) + d(b, c)$
 -   \(3\) can be interpreted as: "the direct path between two points must be at least as short as any detour"
--   This is not true for e.g. Bray-Curtis, but in practice it is very rarely problematic.
+-   \(3\) is not true for e.g. Bray-Curtis, but in practice it is very rarely problematic.
 :::
 
 -   The object is now class `psExtra` (created by microViz)
@@ -261,13 +375,6 @@ range(as.matrix(distances))
 
 ------------------------------------------------------------------------
 
-## Ordination
-
--   What can we do with these dissimilarities? 🤔
--   We can make an ordination! 💡
--   Conceptually, ordination refers to a process of ordering things (in our case: samples).
--   Similar samples are placed closer to each other, and dissimilar samples are placed further away.
-
 ### PCoA
 
 Principal Co-ordinates Analysis is one kind of ordination.
@@ -278,42 +385,18 @@ Principal Co-ordinates Analysis is one kind of ordination.
 -   This makes it easier to visualize the patterns in your data, in 2D or 3D plots 👀
 
 ::: {.callout-note collapse="true"}
-### For more info, see "GUSTAME"
+###### For more info, see "GUSTAME"
 
 -   There is helpful info about ordination methods including PCoA on the GUide to STatistical Analysis in Microbial Ecology website (GUSTA ME). <https://sites.google.com/site/mb3gustame/dissimilarity-based-methods/principal-coordinates-analysis>
 -   This website covers a lot of other topics too, which may be interesting for you to read at a later date if you'll work on microbiome analysis.
 :::
 
-```{r}
-ps %>%
-  tax_transform(trans = "identity", rank = "Genus") %>%
-  dist_calc(dist = "bray") %>%
-  ord_calc(method = "PCoA") %>%
-  ord_plot(alpha = 0.6, size = 2) +
-  theme_classic(12) +
-  coord_fixed(0.7)
-```
-
-To get a little insight into what has happened here, we can colour each sample according to its dominant (most abundant) genus.
-
-```{r}
-ps %>%
-  ps_calc_dominant(rank = "Genus", none = "Mixed", other = "Other", var = "Dominant Genus") %>%
-  tax_transform(trans = "identity", rank = "Genus") %>%
-  dist_calc(dist = "bray") %>%
-  ord_calc(method = "PCoA") %>%
-  ord_plot(color = "Dominant Genus", alpha = 0.6, size = 2) +
-  scale_color_brewer(palette = "Dark2") +
-  theme_classic(12) +
-  coord_fixed(0.7)
-```
-
-## Interactive ordination!
+### Interactive ordination!
 
 `microViz` provides a Shiny app `ord_explore` to interactively create and explore PCoA plots and other ordinations. See the code below to get started. But read the instructions first.
 
 ::: {.callout-tip collapse="true"}
-### **Instructions:** a few things to try out
+###### **Instructions:** a few things to try out
 
 -   Colour the samples using the variables in the sample data
 -   Select a few samples to view their composition on bar charts!
@@ -331,7 +414,7 @@ ps %>%
 :::
 
 ::: {.callout-warning collapse="true"}
-### **Beware: some important notes on interactive analysis**
+###### **Beware: some important notes on interactive analysis**
 
 -   **Unblock pop-ups**: To allow the interactive analysis window to open in your browser, you may need to unblock pop-ups for your AMI instance address (check for messages about this after running the ord_explore command)
 -   **Slow UniFrac**: UniFrac distances can be quite slow (over a minute) to calculate!
@@ -377,7 +460,7 @@ ps %>%
 
 ------------------------------------------------------------------------
 
-## PERMANOVA
+### PERMANOVA
 
 Permutational multivariate analysis of variance.
 
@@ -386,12 +469,13 @@ Permutational multivariate analysis of variance.
 -   Permutational - statistical significance estimates obtained by shuffling the data many times
 
 ::: {.callout-note collapse="true"}
-### For more details on PERMANOVA
+##### For more details on PERMANOVA
 
 -   See this excellent book chapter by Marti Anderson on PERMANOVA: <https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841>
+
 -   Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA)
+
 -   e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova).
-:::
 
 -   **TLDR:** Are those groups on the PCoA actually different??
 
@@ -421,7 +505,7 @@ ps %>%
 
 You can see from the model output that the p value, Pr(\>F) is below 0.05. So there is good statistical evidence that the bacterial gut microbiota composition of C-section delivered infants has a different composition than vaginally delivered infants at 4 days of age.
 
-### Reporting PCoA and PERMANOVA methods
+##### Reporting PCoA and PERMANOVA methods
 
 -   Your methodological choices matter, you should report what you did:
     -   any relevant rare taxon filtering thresholds
@@ -430,7 +514,7 @@ You can see from the model output that the p value, Pr(\>F) is below 0.05. So th
 
 It's probably a good idea to decide on a couple of appropriate distance measures up front for these tests, and report both (at least in supplementary material), as the choice of distance measure can affect results and conclusions!
 
-### Covariate-adjusted PERMANOVA
+#### Covariate-adjusted PERMANOVA
 
 You can also adjust for covariates in PERMANOVA, and often should, depending on your study design. Let's fit a more complex model, adjusting for sex and age.
 
@@ -444,11 +528,14 @@ ps %>%
     n_perms = 99, seed = 111
   ) %>%
   perm_get()
-# Use more permutations for a more reliable p.value in your real work (slower)
-# Set a random seed number for reproducibility of this stochastic method
 ```
 
-## PCA
+Use more permutations for a more reliable p.value in your real work (it is slower).
+
+Always set a *seed* number for reproducibility of this random permutation method!
+:::
+
+### PCA
 
 -   Principal **Components** Analysis.
 -   For practical purposes, PCA is quite similar to Principal Co-ordinates Analysis.
@@ -496,15 +583,13 @@ ps %>%
 ```
 :::
 
-**Problems with PCA (or PCoA with Euclidean Distances) on microbiota data**
+##### **Problems with PCA (or PCoA with Euclidean Distances) on microbiota data**
 
 -   These plots look weird! most samples bunch in the middle, with spindly projections..
 -   Sensitive to sparsity (double-zero problem) --\> filter rare taxa
 -   Excessive emphasis on high-abundance taxa --\> log transform features first
 
-------------------------------------------------------------------------
-
-## Log transformations, and CLR
+##### Log transformations, and CLR
 
 -   First let's look at the abundance again, this time with heatmaps.
 -   Each column is a sample (from a child), and each row is a taxon.
@@ -522,19 +607,19 @@ ps %>%
 -   This small value is often called a pseudo-count.
 
 ::: {.callout-tip collapse="true"}
-### What value should we use for the pseudo-count?
+###### What value should we use for the pseudo-count?
 
 -   One easy option is to just add a count of 1
 -   Another popular option is to add half of the smallest observed real value (from across the whole dataset)
 -   In general, for zero replacement, keep it simple and **record your approach**
 :::
 
-### Centered Log Ratio transformation:
+#### Centered Log Ratio transformation:
 
 **Remember**, [Microbiome Datasets Are Compositional: And This Is Not Optional.](https://doi.org/10.3389/fmicb.2017.02224)
 
 ::: {.callout-note collapse="true"}
-### More details on the "CoDa" problem:
+###### More details on the "CoDa" problem:
 
 -   The sequencing data gives us relative abundances, not absolute abundances.
 -   The total number of reads sequenced per sample is an arbitrary total.
@@ -568,7 +653,7 @@ ps %>%
   )
 ```
 
-### PCA on CLR-transformed taxa
+#### PCA on CLR-transformed taxa
 
 ```{r}
 ps %>%
@@ -583,7 +668,7 @@ ps %>%
 -   After the CLR transformation, the plot looks better
 -   We can see a pattern where the gut microbiomes of infants cluster by birth mode
 
-#### So why is PCA interesting for us?
+##### So why is PCA interesting for us?
 
 -   Principal components are built directly from a (linear) combination of the original features.
 
@@ -612,14 +697,14 @@ pca
 Interestingly, samples on the right of the plot (which tend to be UC patients) seem to have relatively more *Escherichia/Shigella*, and less *Blautia*, *Faecalibacterium* and *Roseburia*.
 
 ::: {.callout-important collapse="true"}
-### Wait, how to interpret these taxa loadings?
+###### Wait, how to interpret these taxa loadings?
 
-##### Cautiously
+###### Cautiously
 
 -   There are caveats and nuance to the interpretation of these plots, which are called PCA bi-plots
 -   You can read more here: <https://sites.google.com/site/mb3gustame/indirect-gradient-analysis/principal-components-analysis>
 
-##### In general:
+###### In general:
 
 The relative length and direction of an arrow indicates how much that taxon contributes to the variation on each visible PC axis, e.g. Variation in *Faecalibacterium* abundance contributes quite a lot to variation along the PC1 axis.
 
@@ -629,7 +714,7 @@ The direction allows you to infer that samples positioned towards the left of th
 :::
 
 ::: {.callout-note collapse="true"}
-### Fancy circular bar charts?
+###### Fancy circular bar charts?
 
 We can make another kind of bar plot, using the PCA information to order our samples in a circular layout.
 
@@ -648,150 +733,6 @@ iris <- ps %>%
 ```{r, fig.height=5, fig.width=10}
 patchwork::wrap_plots(pca, iris, nrow = 1, guides = "collect")
 ```
-:::
-
-::: {.callout-note collapse="true"}
-### Notes on filtering rare taxa
-
-We probably want to filter out **rare** taxa, before performing some kinds of analysis.
-
-##### Why remove rare taxa?
-
-**Rare taxa might sometimes be:**
-
-1.  Sequencing errors
-2.  Statistically problematic
-3.  Biologically irrelevant
-
-##### How to remove rare taxa?
-
-**What is rare?** Two main concepts.
-
--   Low **prevalence** - taxon only detected in a small number of samples in your dataset.
--   Low **abundance** - relatively few reads assigned to that taxon (on average or in total)
-
-Considering the impact of issues 1, 2, and 3, let's say we are not interested in Species that occur in fewer than 2% of samples, and they have to have at least 10,000 reads in total across all samples.
-
-```{r}
-ntaxa(ps) # before filtering
-```
-
-```{r}
-ps %>%
-  tax_filter(min_prevalence = 2, min_total_abundance = 100) %>%
-  ntaxa() # after filtering
-```
-
--   Wow so that would remove **most** of our unique taxa!
--   What is going on? Let's make some plots!
-
-```{r}
-# make table of summary statistics for the unique taxa in shao19
-psTaxaStats <- tibble(
-  taxon = taxa_names(ps),
-  prevalence = microbiome::prevalence(ps),
-  total_abundance = taxa_sums(ps)
-)
-```
-
-```{r}
-#| code-fold: true
-#| code-summary: Some ggplot2 code
-p <- psTaxaStats %>%
-  ggplot(aes(total_abundance, prevalence)) +
-  geom_point(alpha = 0.5) +
-  geom_rug(alpha = 0.1) +
-  scale_x_continuous(labels = scales::label_number(), name = "Total Abundance") +
-  scale_y_continuous(
-    labels = scales::label_percent(), breaks = scales::breaks_pretty(n = 9),
-    name = "Prevalence (%)",
-    sec.axis = sec_axis(
-      trans = ~ . * nsamples(ps), breaks = scales::breaks_pretty(n = 9),
-      name = "Prevalence (N samples)"
-    )
-  ) +
-  theme_bw()
-p
-```
-
-So most taxa have a low prevalence, and handful have way more reads than most.
-
-Let's label those points to check which taxa are the big time players.
-
-```{r}
-p + ggrepel::geom_text_repel(
-  data = function(df) filter(df, total_abundance > 1500 | prevalence > 0.6),
-  mapping = aes(label = taxon), size = 2.5, min.segment.length = 0, 
-  force = 20, nudge_y = 0.05
-)
-```
-
-Those taxa make sense for this dataset of gut microbiota samples.
-
-Now let's zoom in on the less abundant taxa by log-transforming the axes. We'll also add lines indicating the thresholds of 2% prevalence and 1000 reads abundance.
-
-```{r}
-#| code-fold: true
-#| code-summary: Some more ggplot2 code
-psTaxaStats %>%
-  ggplot(aes(x = total_abundance, y = prevalence)) +
-  geom_vline(xintercept = 10, color = "red", linetype = "dotted") +
-  geom_hline(yintercept = 2 / 100, color = "red", linetype = "dotted") +
-  geom_point(alpha = 0.5) +
-  geom_rug(alpha = 0.1) +
-  scale_x_log10(labels = scales::label_number(), name = "Total Abundance") +
-  scale_y_log10(
-    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
-    name = "Prevalence (%)",
-    sec.axis = sec_axis(
-      trans = ~ . * nsamples(ps), breaks = scales::breaks_log(n = 9),
-      name = "Prevalence (N samples)"
-    )
-  ) +
-  theme_bw()
-```
-
--   We can break this down by phylum if we add the taxonomic table information.
-
-```{r, fig.height = 5, fig.width=8}
-#| code-fold: true
-#| code-summary: A lot more ggplot2 code!
-# don't worry about this code if it's confusing, just focus on the plot output
-ps %>%
-  tax_table() %>%
-  as.data.frame() %>%
-  as_tibble(rownames = "taxon") %>%
-  left_join(psTaxaStats, by = "taxon") %>%
-  add_count(Phylum, name = "phylum_count", sort = TRUE) %>%
-  mutate(Phylum = factor(Phylum, levels = unique(Phylum))) %>% # to fix facet order
-  mutate(Phylum = forcats::fct_lump_n(Phylum, n = 5)) %>%
-  mutate(Phylum = forcats::fct_explicit_na(Phylum, na_level = "Other")) %>%
-  ggplot(aes(total_abundance, prevalence)) +
-  geom_vline(xintercept = 10, color = "red", linetype = "dotted") +
-  geom_hline(yintercept = 2 / 100, color = "red", linetype = "dotted") +
-  geom_point(alpha = 0.5, size = 1) +
-  geom_rug(alpha = 0.2) +
-  scale_x_log10(
-    labels = scales::label_log(), breaks = scales::breaks_log(n = 5),
-    name = "Total Abundance"
-  ) +
-  scale_y_log10(
-    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
-    name = "Prevalence (%)",
-    sec.axis = sec_axis(
-      trans = ~ . * nsamples(shao19), breaks = scales::breaks_log(n = 9),
-      name = "Prevalence (N samples)"
-    )
-  ) +
-  facet_wrap("Phylum") +
-  theme_bw(10)
-```
-
-**How you pick a threshold, depends on what analysis method you are filtering for!**
-
--   alpha diversity: do not filter
--   beta diversity: relevance of threshold depends on your distance measure
--   differential abundance testing: stringent filtering, prevalence \>5%, \>10%?
 :::
 
 ## More bar charts
@@ -971,6 +912,150 @@ psModels
 ```
 
 *Why filter the taxa? It's less likely that we are interested in rare taxa, and models of rare taxon abundances are more likely to be unreliable. Reducing the the number of taxa modelled also makes the process faster and makes visualizing the results easier!*
+
+::: {.callout-note collapse="true"}
+###### Notes on filtering rare taxa
+
+We probably want to filter out **rare** taxa, before performing some kinds of analysis.
+
+##### Why remove rare taxa?
+
+**Rare taxa might sometimes be:**
+
+1.  Sequencing errors
+2.  Statistically problematic
+3.  Biologically irrelevant
+
+##### How to remove rare taxa?
+
+**What is rare?** Two main concepts.
+
+-   Low **prevalence** - taxon only detected in a small number of samples in your dataset.
+-   Low **abundance** - relatively few reads assigned to that taxon (on average or in total)
+
+Considering the impact of issues 1, 2, and 3, let's say we are not interested in Species that occur in fewer than 2% of samples, and they have to have at least 10,000 reads in total across all samples.
+
+```{r}
+ntaxa(ps) # before filtering
+```
+
+```{r}
+ps %>%
+  tax_filter(min_prevalence = 2, min_total_abundance = 100) %>%
+  ntaxa() # after filtering
+```
+
+-   Wow so that would remove **most** of our unique taxa!
+-   What is going on? Let's make some plots!
+
+```{r}
+# make table of summary statistics for the unique taxa in shao19
+psTaxaStats <- tibble(
+  taxon = taxa_names(ps),
+  prevalence = microbiome::prevalence(ps),
+  total_abundance = taxa_sums(ps)
+)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: Some ggplot2 code
+p <- psTaxaStats %>%
+  ggplot(aes(total_abundance, prevalence)) +
+  geom_point(alpha = 0.5) +
+  geom_rug(alpha = 0.1) +
+  scale_x_continuous(labels = scales::label_number(), name = "Total Abundance") +
+  scale_y_continuous(
+    labels = scales::label_percent(), breaks = scales::breaks_pretty(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(ps), breaks = scales::breaks_pretty(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  theme_bw()
+p
+```
+
+So most taxa have a low prevalence, and handful have way more reads than most.
+
+Let's label those points to check which taxa are the big time players.
+
+```{r}
+p + ggrepel::geom_text_repel(
+  data = function(df) filter(df, total_abundance > 1500 | prevalence > 0.6),
+  mapping = aes(label = taxon), size = 2.5, min.segment.length = 0, 
+  force = 20, nudge_y = 0.05
+)
+```
+
+Those taxa make sense for this dataset of gut microbiota samples.
+
+Now let's zoom in on the less abundant taxa by log-transforming the axes. We'll also add lines indicating the thresholds of 2% prevalence and 1000 reads abundance.
+
+```{r}
+#| code-fold: true
+#| code-summary: Some more ggplot2 code
+psTaxaStats %>%
+  ggplot(aes(x = total_abundance, y = prevalence)) +
+  geom_vline(xintercept = 10, color = "red", linetype = "dotted") +
+  geom_hline(yintercept = 2 / 100, color = "red", linetype = "dotted") +
+  geom_point(alpha = 0.5) +
+  geom_rug(alpha = 0.1) +
+  scale_x_log10(labels = scales::label_number(), name = "Total Abundance") +
+  scale_y_log10(
+    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(ps), breaks = scales::breaks_log(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  theme_bw()
+```
+
+-   We can break this down by phylum if we add the taxonomic table information.
+
+```{r, fig.height = 5, fig.width=8}
+#| code-fold: true
+#| code-summary: A lot more ggplot2 code!
+# don't worry about this code if it's confusing, just focus on the plot output
+ps %>%
+  tax_table() %>%
+  as.data.frame() %>%
+  as_tibble(rownames = "taxon") %>%
+  left_join(psTaxaStats, by = "taxon") %>%
+  add_count(Phylum, name = "phylum_count", sort = TRUE) %>%
+  mutate(Phylum = factor(Phylum, levels = unique(Phylum))) %>% # to fix facet order
+  mutate(Phylum = forcats::fct_lump_n(Phylum, n = 5)) %>%
+  mutate(Phylum = forcats::fct_explicit_na(Phylum, na_level = "Other")) %>%
+  ggplot(aes(total_abundance, prevalence)) +
+  geom_vline(xintercept = 10, color = "red", linetype = "dotted") +
+  geom_hline(yintercept = 2 / 100, color = "red", linetype = "dotted") +
+  geom_point(alpha = 0.5, size = 1) +
+  geom_rug(alpha = 0.2) +
+  scale_x_log10(
+    labels = scales::label_log(), breaks = scales::breaks_log(n = 5),
+    name = "Total Abundance"
+  ) +
+  scale_y_log10(
+    labels = scales::label_percent(), breaks = scales::breaks_log(n = 9),
+    name = "Prevalence (%)",
+    sec.axis = sec_axis(
+      trans = ~ . * nsamples(shao19), breaks = scales::breaks_log(n = 9),
+      name = "Prevalence (N samples)"
+    )
+  ) +
+  facet_wrap("Phylum") +
+  theme_bw(10)
+```
+
+**How you pick a threshold, depends on what analysis method you are filtering for!**
+
+-   alpha diversity: do not filter
+-   beta diversity: relevance of threshold depends on your distance measure
+-   differential abundance testing: stringent filtering, prevalence \>5%, \>10%?
+:::
 
 #### Getting stats from the models
 
