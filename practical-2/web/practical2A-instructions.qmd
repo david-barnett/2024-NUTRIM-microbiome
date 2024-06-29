@@ -417,6 +417,116 @@ There is helpful info about ordination methods, including PCoA, on the GUide to 
 This website covers a lot of other topics too, which may be interesting for you to read at a later date if you'll work on microbiome analysis.
 :::
 
+## More PERMANOVA
+
+"Permutational multivariate analysis of variance" - what does that mean?
+
+-   **Permutational** - statistical significance estimates obtained by shuffling the data many times
+-   **Multivariate** - more than one dependent/outcome variable (i.e. the pairwise distances)
+-   **Analysis of variance** - ANOVA (statistical modelling approach)
+
+::: {.callout-note collapse="true"}
+#### Covariate-adjusted PERMANOVA
+
+You can adjust for covariates in PERMANOVA, and often should, depending on your study design.
+
+Let's fit a more complex model, adjusting for sex and age.
+
+```{r}
+ps %>%
+  tax_agg(rank = "Genus") %>%
+  dist_calc(dist = "bray") %>%
+  dist_permanova(
+    variables = c("diagnosis", "gender", "age_years"),
+    n_perms = 999, seed = 111
+  ) %>%
+  perm_get()
+```
+
+Use more permutations for a more precise and reliable p.value in your real work (it is slower).
+
+Always set a *seed* number for reproducibility of this random permutation method!
+:::
+
+::: {.callout-note collapse="true"}
+#### Compare pairs of groups?
+
+We saw that diagnosis group is significantly associated with microbiota composition.
+
+We probably also want to know if there are differences between each pair of diagnoses: CD, UC, Other.
+
+From the previous ordination plot, we might hypothesise that UC shows the clearest difference.
+
+```{r}
+psx_bray %>% 
+  ord_calc("PCoA") %>% 
+  ord_plot(colour = "diagnosis") +
+  stat_ellipse(aes(colour = diagnosis)) +
+  coord_equal()
+```
+
+There is no posthoc testing routine for PERMANOVA - so instead we will check each comparison individually.
+
+We will use `ps_filter()` to exclude the samples from each diagnosis group each time.
+
+::: panel-tabset
+
+##### UC vs Other
+
+```{r, message=FALSE}
+ps %>%
+  ps_filter(diagnosis != "CD") %>% 
+  tax_transform(trans = "identity", rank = "Genus") %>% 
+  dist_calc("bray") %>% 
+  dist_permanova(variables = "diagnosis", seed = 42)
+```
+
+##### CD vs Other
+
+```{r, message=FALSE}
+ps %>%
+  ps_filter(diagnosis != "UC") %>% 
+  tax_transform(trans = "identity", rank = "Genus") %>% 
+  dist_calc("bray") %>% 
+  dist_permanova(variables = "diagnosis", seed = 42) 
+```
+
+##### UC vs CD
+
+```{r, message=FALSE}
+ps %>%
+  ps_filter(diagnosis != "Other") %>% 
+  tax_transform(trans = "identity", rank = "Genus") %>% 
+  dist_calc("bray") %>% 
+  dist_permanova(variables = "diagnosis", seed = 42) 
+```
+
+:::
+
+:::
+
+
+::: {.callout-caution collapse="true"}
+#### Reporting PCoA and PERMANOVA methods
+
+Your methodological choices matter, so you should report what you did:
+
+-   any relevant rare taxon filtering
+-   the taxonomic rank of aggregation
+-   the dissimilarity measure used to compute the pairwise distances
+-   any covariates included in the statistical model
+
+It's a good idea to decide on one or two distance measures *a priori*, and report both (at least in supplementary material).  The choice of distance measure can affect results and conclusions!
+:::
+
+::: {.callout-tip collapse="false"}
+#### More details on PERMANOVA
+
+See this excellent [online book chapter](https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841){target="_blank"} by Marti Anderson.
+
+Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA) e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova){target="_blank"}
+:::
+
 ## Interactive ordination!
 
 `microViz` provides a `Shiny` app `ord_explore()` to interactively create and explore PCoA plots and other ordinations. Let's give it a try!
@@ -492,58 +602,7 @@ Try out PCA, principal **components** analysis, which does NOT use distances
 
 We will not discuss "constrained" or "conditioned" ordinations today:
 
-> If you are interested in e.g. RDA, you can look this up in the [Guide to Statistical Analysis in Microbial Ecology](https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis){target="_blank"}
-:::
-
-## PERMANOVA
-
-"Permutational multivariate analysis of variance" - what does that mean?
-
--   **Permutational** - statistical significance estimates obtained by shuffling the data many times
--   **Multivariate** - more than one dependent/outcome variable (i.e. the pairwise distances)
--   **Analysis of variance** - ANOVA (statistical modelling approach)
-
-::: {.callout-note collapse="true"}
-#### Covariate-adjusted PERMANOVA
-
-You can adjust for covariates in PERMANOVA, and often should, depending on your study design.
-
-Let's fit a more complex model, adjusting for sex and age.
-
-```{r}
-ps %>%
-  tax_agg(rank = "Genus") %>%
-  dist_calc(dist = "bray") %>%
-  dist_permanova(
-    variables = c("diagnosis", "gender", "age_years"),
-    n_perms = 99, seed = 111
-  ) %>%
-  perm_get()
-```
-
-Use more permutations for a more precise and reliable p.value in your real work (it is slower).
-
-Always set a *seed* number for reproducibility of this random permutation method!
-:::
-
-::: {.callout-note collapse="true"}
-##### Reporting PCoA and PERMANOVA methods
-
--   Your methodological choices matter, you should report what you did:
-    -   any relevant rare taxon filtering
-    -   the taxonomic rank of aggregation
-    -   the dissimilarity measure used to compute the pairwise distances
-    -   any covariates included in the statistical model
-
-It's a good idea to decide on one or two distance measures *a priori*, and report both (at least in supplementary material).  The choice of distance measure can affect results and conclusions!
-:::
-
-::: {.callout-note collapse="false"}
-##### More details on PERMANOVA
-
-See this excellent book chapter by Marti Anderson: [https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841](https://onlinelibrary.wiley.com/doi/full/10.1002/9781118445112.stat07841){target="_blank"}
-
-Sometimes PERMANOVA is called NP-MANOVA (non-parametric MANOVA) e.g. on the GUide to STatistical Analysis in Microbial Ecology [website](https://sites.google.com/site/mb3gustame/hypothesis-tests/manova/npmanova){target="_blank"}
+> If you are interested in e.g. RDA, check the [Guide to Statistical Analysis in Microbial Ecology](https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis){target="_blank"}
 :::
 
 ## PCA
@@ -554,22 +613,24 @@ For practical purposes, PCA is quite similar to Principal Co-ordinates Analysis.
 
 In fact, PCA produces equivalent results to PCoA with Euclidean distances.
 
-### PCA on CLR-transformed taxa
+::: {.callout-tip collapse="true"}
+#### Wait, what are Euclidean distances?
 
-```{r}
-ps %>%
-  tax_filter(min_prevalence = 2, verbose = FALSE) %>%
-  tax_transform(rank = "Genus", trans = "clr", zero_replace = "halfmin") %>%
-  ord_calc(method = "PCA") %>%
-  ord_plot(alpha = 0.6, size = 2, color = "diagnosis") +
-  theme_classic(12) +
-  coord_fixed(0.7)
-```
+-   Euclidean distances are essentially a generalization of Pythagoras' theorem to more dimensions.
+-   In our data every taxon is a feature, a dimension, on which we calculate Euclidean distances.
 
--   After the CLR transformation, the plot looks better
--   We can see a pattern where the gut microbiomes of infants cluster by birth mode
+**Pythagoras' theorem:**
 
-#### So why is PCA interesting for us?
+$$c = \sqrt{a^2 + b^2}$$
+
+**Euclidean distance:**
+
+$$d\left(p, q\right) = \sqrt{\sum _{i=1}^{n_{taxa}} \left( p_{i}-q_{i}\right)^2 }$$
+
+-   Distance $d$ between samples $p$ and $q$, with $n$ taxa.
+:::
+
+### Why is PCA interesting?
 
 -   Principal components are built directly from a (linear) combination of the original features.
 
@@ -578,6 +639,7 @@ ps %>%
 -   We can plot this information (loadings) as arrows, alongside the sample points
 
 ```{r}
+#| code-fold: true
 pca <- ps %>%
   tax_filter(min_prevalence = 2, verbose = FALSE) %>%
   tax_transform(rank = "Genus", trans = "clr", zero_replace = "halfmin") %>%
@@ -592,6 +654,7 @@ pca <- ps %>%
   ) +
   theme_classic(12) +
   coord_fixed(ratio = 1, xlim = c(-3, 3), ylim = c(-3, 3), clip = "off")
+
 pca
 ```
 
@@ -608,28 +671,42 @@ The direction allows you to infer that samples positioned towards the left of th
 
 *Bacteroides* variation contributes to both PC1 and PC2, as indicate by its high (negative) values on both axes.
 
-**Cautiously**
+**But be cautious:**
 
 -   There are caveats and nuance to the interpretation of these plots, which are called PCA bi-plots
 -   You can read more here: [https://sites.google.com/site/mb3gustame/indirect-gradient-analysis/principal-components-analysis](https://sites.google.com/site/mb3gustame/indirect-gradient-analysis/principal-components-analysis){target="_blank"}
 :::
 
 ::: {.callout-tip collapse="true"}
-#### "Help, what are Euclidean distances?"
+###### Fancy circular bar charts?
 
--   Euclidean distances are essentially a generalization of Pythagoras' theorem to more dimensions.
--   In our data every taxon is a feature, a dimension, on which we calculate Euclidean distances.
+We can make another kind of bar plot, using the PCA information to order our samples in a circular layout.
 
-**Pythagoras' theorem:**
+This can help complement our interpretation of the PCA plot loadings.
 
-$$c = \sqrt{a^2 + b^2}$$
+```{r}
+iris <- ps %>%
+  tax_filter(min_prevalence = 2, verbose = FALSE) %>%
+  tax_transform(rank = "Genus", trans = "clr", zero_replace = "halfmin") %>%
+  ord_calc(method = "PCA") %>%
+  ord_plot_iris(
+    tax_level = "Genus", n_taxa = 12, other = "Other",
+    anno_colour = "diagnosis",
+    anno_colour_style = list(alpha = 0.6, size = 0.6, show.legend = FALSE)
+  )
+```
 
-**Euclidean distance:**
+```{r, fig.height=5, fig.width=10}
+patchwork::wrap_plots(pca, iris, nrow = 1, guides = "collect")
+```
+:::
 
-$$d\left(p, q\right) = \sqrt{\sum _{i=1}^{n_{taxa}} \left( p_{i}-q_{i}\right)^2 }$$
+::: {.callout-warning collapse="true"}
+##### Don't do PCA on untransformed microbiota counts!
 
--   Distance $d$ between samples $p$ and $q$, with $n$ taxa.
+These plots look weird! most samples bunch in the middle, with spindly projections..
 
+::: panel-tabset
 #### Euclidean PCoA
 
 ```{r}
@@ -639,7 +716,8 @@ ps %>%
   dist_calc(dist = "euclidean") %>%
   ord_calc(method = "PCoA") %>%
   ord_plot(alpha = 0.6, size = 2) +
-  geom_rug(alpha = 0.1)
+  geom_rug(alpha = 0.1) +
+  coord_equal()
 ```
 
 #### PCA on counts
@@ -650,15 +728,21 @@ ps %>%
   tax_agg(rank = "Genus") %>%
   ord_calc(method = "PCA") %>%
   ord_plot(alpha = 0.6, size = 2) +
-  geom_rug(alpha = 0.1)
+  geom_rug(alpha = 0.1) +
+  coord_equal()
 ```
+:::
 
-##### **Problems with PCA (or PCoA with Euclidean Distances) on microbiota data**
+**Why doesn't this work?**
 
--   These plots look weird! most samples bunch in the middle, with spindly projections..
--   Sensitive to sparsity (double-zero problem) --\> filter rare taxa
--   Excessive emphasis on high-abundance taxa --\> log transform features first
+-   These ordinations are sensitive to sparsity (double-zero problem) -\> aggregate taxa (and maybe filter rare taxa)
 
+-   Excessive emphasis on high-abundance taxa -\> log transform features first
+
+-   Sequencing data are compositional -\> try the centered log ratio (CLR) transformation
+:::
+
+::: {.callout-tip collapse="true"}
 ##### Log transformations, and CLR
 
 -   First let's look at the abundance again, this time with heatmaps.
@@ -668,7 +752,10 @@ ps %>%
 ps %>%
   tax_sort(by = sum, at = "Genus", trans = "compositional", tree_warn = FALSE) %>%
   tax_transform(trans = "compositional", rank = "Genus") %>%
-  comp_heatmap(samples = 1:20, taxa = 1:20, name = "Proportions", tax_seriation = "Identity")
+  comp_heatmap(
+    samples = 1:20, taxa = 1:20, 
+    name = "Proportions", tax_seriation = "Identity"
+  )
 ```
 
 -   Even though we have picked the top 20 most abundant genera, there are still a lot of zeros
@@ -676,12 +763,13 @@ ps %>%
 -   **Solution:** add a small amount to every value (or just every zero), before applying the log transformation.
 -   This small value is often called a pseudo-count.
 
-::: {.callout-tip collapse="true"}
+::: callout-note
 ###### What value should we use for the pseudo-count?
 
 -   One easy option is to just add a count of 1
 -   Another popular option is to add half of the smallest observed real value (from across the whole dataset)
 -   In general, for zero replacement, keep it simple and **record your approach**
+:::
 :::
 
 #### Centered Log Ratio transformation:
@@ -722,31 +810,7 @@ ps %>%
     tax_seriation = "Identity"
   )
 ```
-:::
 
-:::
-
-::: {.callout-note collapse="true"}
-###### Fancy circular bar charts?
-
-We can make another kind of bar plot, using the PCA information to order our samples in a circular layout.
-
-```{r}
-iris <- ps %>%
-  tax_filter(min_prevalence = 2, verbose = FALSE) %>%
-  tax_transform(rank = "Genus", trans = "clr", zero_replace = "halfmin") %>%
-  ord_calc(method = "PCA") %>%
-  ord_plot_iris(
-    tax_level = "Genus", n_taxa = 12, other = "Other",
-    anno_colour = "diagnosis",
-    anno_colour_style = list(alpha = 0.6, size = 0.6, show.legend = FALSE)
-  )
-```
-
-```{r, fig.height=5, fig.width=10}
-patchwork::wrap_plots(pca, iris, nrow = 1, guides = "collect")
-```
-:::
 
 ## More bar charts
 
