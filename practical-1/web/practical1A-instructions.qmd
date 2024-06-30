@@ -67,28 +67,34 @@ In this workshop we will use an online version of [RStudio](https://posit.co/dow
 
 We will write code and notes in [Quarto](https://r4ds.hadley.nz/quarto){target="_blank"} `.qmd` documents, e.g. `practical-1A-notebook.qmd`
 
+#### **Write some notes:**
+
 You can write normal text for notes, e.g. your intentions, hypotheses, observations, etc.
-
-```{r}
-# You can write code and comments in "chunks" 
-print("Hello World") # start "comments" with the # symbol
-```
-
-1.  Insert a code chunk with `Ctrl`+`Alt`+`I` (Windows) or `Cmd`+`Option`+`I` (Mac).
-
-2.  Run the current chunk by clicking the green play button in the corner of the chunk
-
-3.  Run all previous chunks by clicking the other button in the corner of the chunk
-
-```{r, eval=FALSE}
-# How to run code with keyboard shortcuts?
-print("Run this one line with Ctrl + Enter, or Cmd + Enter on Mac")
-print("or run a whole chunk with Ctrl/Cmd + SHIFT + Enter")
-```
 
 To edit your Quarto notebooks in RStudio you can use "[Visual](https://quarto.org/docs/visual-editor/){target="_blank"}" editor mode, or the "Source" mode.
 
 *Toggle between modes at the top left. Visual editor is easier for beginners, but Source mode shows how the Quarto file truly looks (it only contains [markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"} text, but RStudio adds formatting in Visual mode).*
+
+#### **Write and run code:**
+
+You can write code and comments in "chunks" - like the one below.
+
+Run a chunk by clicking the green play button in the corner of the chunk
+
+```{r, eval=FALSE}
+# This is a comment, because it starts with the # symbol
+print("This line is code, try to run it!") 
+```
+
+Insert a code chunk with `Ctrl`+`Alt`+`I` (Windows) or `Cmd`+`Option`+`I` (Mac).
+
+```{r, eval=FALSE}
+# You can also run code with keyboard shortcuts!
+print("Run this one line with Ctrl + Enter, or Cmd + Enter on Mac")
+print("or run a whole chunk with Ctrl/Cmd + SHIFT + Enter")
+```
+
+You can run all previous chunks by clicking the other button in the corner of the chunk.
 
 ## Load R packages 📦
 
