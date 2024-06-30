@@ -253,16 +253,16 @@ Write an excel file.
 
 ```
 
-ction from the `readr` package.
+Write a CSV file.
 
 ```{r}
-write_csv(all_meta, here(output_path, "all_metadata.csv"))
+
 ```
 
-RDS files are R's native format for saving single R objects. They preserve data types and structures, making them ideal for saving and loading a variety of R objects.
+Write an RDS file.
 
 ```{r}
-saveRDS(all_meta, here(output_path, "all_metadata.rds"))
+
 ```
 
 ## Session info
