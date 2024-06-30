@@ -191,7 +191,7 @@ taxonomy %>% filter(Phylum == "Actinobacteria") %>% pull(Genus) %>% unique()
 First let's plot a histogram of OTU number 1.
 
 ```{r, fig.width=8, fig.height=2}
-counts %>% ggplot(aes(OTU_00001)) + geom_histogram(binwidth = 5)
+counts %>% ggplot(aes(OTU_00001)) + geom_histogram(bins = 50)
 ```
 
 Looks like there are a lot of zeros!
