@@ -2,9 +2,9 @@
 
 -   This readme: [david-barnett.github.io/2024-NUTRIM-microbiome](https://david-barnett.github.io/2024-NUTRIM-microbiome)
 
--   Course timetable on [Google sheets](https://docs.google.com/spreadsheets/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing){target="_blank"}
+-   Course timetable on [Google sheets](https://docs.google.com/spreadsheets/d/1mt0nUgz8h7Lax0L2wGjKzeZomPlQbVFaPmd1gahLUqA/edit?usp=sharing)
 
--   posit.cloud free account signup: [posit.cloud/plans/free](https://posit.cloud/plans/free){target="_blank"}
+-   posit.cloud free account signup: [posit.cloud/plans/free](https://posit.cloud/plans/free)
 
     -   Check your email for the link to join the posit.cloud space for this course
 
@@ -30,6 +30,6 @@ Start with practical 1 - part A - click the link and follow the instructions.
 
 ## Other links
 
--   microViz package website: [https://david-barnett.github.io/microViz/](https://david-barnett.github.io/microViz/){target="_blank"}
+-   microViz package website: [https://david-barnett.github.io/microViz/](https://david-barnett.github.io/microViz/)
 
--   GitHub repo for source material: [github.com/david-barnett/2024-NUTRIM-microbiome](https://github.com/david-barnett/2024-NUTRIM-microbiome){target="_blank"}
+-   GitHub repo for source material: [github.com/david-barnett/2024-NUTRIM-microbiome](https://github.com/david-barnett/2024-NUTRIM-microbiome)
