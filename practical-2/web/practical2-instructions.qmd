@@ -60,15 +60,6 @@ Does the bacterial gut microbiota composition of IBD-diagnosed patients differ f
 
 -   **Taxa:** Is the relative abundance of specific bacterial taxa (e.g. genera) associated with IBD diagnosis?
 
-::: {.callout-note collapse="true"}
-### Secondary aims (an extra challenge)
-
-**Activity:**\
-Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
-
-**Medication:**\
-Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
-:::
 
 ### Methods
 
@@ -548,16 +539,8 @@ ps %>%
   ord_explore()
 ```
 
-::: {.callout-important collapse="false"}
-##### Unblock popups?!
-
-To allow the interactive function to open a new tab in your browser, you may need to unblock pop-ups for posit.cloud
-
-If you don't see anything after running the `ord_explore` command, check for messages/notifications from your browser.
-:::
-
-::: {.callout-tip collapse="true"}
-##### A few things to try out
+::: {.callout-tip collapse="false"}
+##### Instructions / Suggestions
 
 1.  Colour the samples using the variables in the sample data
 
@@ -570,18 +553,19 @@ If you don't see anything after running the `ord_explore` command, check for mes
 
 4.  Copy the automatically generated code
 
-    -   Exit the app (press escape or click red 🛑 button in R console!)
+    -   Exit the app (click the red 🛑 button in R console!)
     -   Paste and run the code to recreate the ordination plot
     -   Customise the plot: change colour scheme, title, etc.
 
 5.  Launch the app again with a different subset of the data:
 
     -   Practice using `ps_filter()`
-        -   e.g. use the data of only the UC patients' gut microbiota!
+    -   e.g. use the data of only the UC patients' gut microbiota!
     -   Colour points by the dominant genus?
 
-``` r
-# Copy these lines to your Console
+```{r, eval=FALSE}
+#| code-fold: true
+#| code-summary: "For suggestion 5: try this code in your Console"
 ps %>%
   tax_filter(min_prevalence = 2, verbose = FALSE) %>%
   ps_filter(diagnosis == "UC") %>%
@@ -591,7 +575,16 @@ ps %>%
 ```
 :::
 
-::: {.callout-warning collapse="true"}
+
+::: {.callout-important collapse="false"}
+##### Unblock popups?!
+
+To allow the interactive function to open a new tab in your browser, you may need to unblock pop-ups for posit.cloud
+
+If you don't see anything after running the `ord_explore` command, check for messages/notifications from your browser.
+:::
+
+::: {.callout-warning collapse="false"}
 ###### **Beware: some important notes on interactive analysis**
 
 **There are many distances available**
@@ -608,9 +601,7 @@ Feel free to try out distances we haven't talked about, **BUT**:
 
 Try out PCA, principal **components** analysis, which does NOT use distances
 
-We will not discuss "constrained" or "conditioned" ordinations today:
-
-> If you are interested in e.g. RDA, check the [Guide to Statistical Analysis in Microbial Ecology](https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis){target="_blank"}
+We will not discuss "constrained" or "conditioned" ordinations today, but if you are interested in e.g. RDA, check the [Guide to Statistical Analysis in Microbial Ecology](https://sites.google.com/site/mb3gustame/constrained-analyses/redundancy-analysis){target="_blank"}
 :::
 
 ## PCA
@@ -655,7 +646,7 @@ pca <- ps %>%
   ord_calc(method = "PCA") %>%
   ord_plot(
     alpha = 0.6, size = 2, color = "diagnosis", 
-    plot_taxa = 1:6, tax_vec_length = 0.6,
+    plot_taxa = 1:6, tax_vec_length = 0.5,
     tax_lab_style = tax_lab_style(
       type = "text", max_angle = 90, aspect_ratio = 1,
       size = 3, fontface = "bold"
@@ -667,7 +658,22 @@ pca <- ps %>%
 pca
 ```
 
+#### Interpretation
+
 Interestingly, samples on the right of the plot (which tend to be UC patients) seem to have relatively more *Escherichia/Shigella*, and less *Blautia*, *Faecalibacterium* and *Roseburia*.
+
+::: {.callout-caution collapse="false"}
+###### Your plot may be mirrored!
+
+When I run this code on my laptop, the UC patients are on the right of the PCA (and the Escherichia/Shigella loading arrow too)
+
+But on your computer, the PCA plot might be mirrored, so they would be on the left side!
+
+This is **not** a problem, as the sign (plus or minus) of a PC and its loadings is arbitrary, and the interpretation does not change.
+
+This happens on different computers if they use slightly different software to solve linear algebra problems.
+
+:::
 
 ::: {.callout-important collapse="true"}
 ###### Wait, how to interpret these taxa loadings?
@@ -1149,11 +1155,43 @@ You can learn how to customise these tree plots to your needs, with this extende
 -   how to use a different regression modelling approach
 :::
 
-## Next! ⏩
+## Extra challenge
 
-If you would like an extra challenge - see the practical2extra instructions.
+If you have already carefully gone through everything above, you may be ready for a real challenge.
 
-Click here: [https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2extra-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2extra-instructions.html){target="_blank"}
+### The secondary aims
+
+#### **Medication:**
+
+Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+
+#### **Disease Activity:**
+
+Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+
+### Instructions?
+
+No code is provided for this challenge - just suggestions.
+
+#### Disease activity
+
+IBD is characterised by periods of active symptomatic disease interspersed with inactive or less symptomatic periods.
+
+It is reasonable to hypothesise that microbiota dysbiosis might be more pronounced during periods of high activity.
+
+Try looking at only the IBD patients (i.e. filter out the controls) to assess if disease activity is associated with microbiota diversity or composition.
+
+#### Medication:
+
+Several patients recently took corticosteroids or other immunosuppressive medications - 
+
+Try creating a correlation heatmap to assess associations between the abundance of top genera and each medication.
+
+Look at this tutorial article for ideas:
+
+<https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html#correlation-heatmaps>{target="_blank"}
+
+Tip: You will need to convert the medication variables to integers: 0 for not used, 1
 
 ## Session info
 
