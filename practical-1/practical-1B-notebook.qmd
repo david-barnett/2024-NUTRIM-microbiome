@@ -30,7 +30,9 @@ The rest you will need to complete by following the the instructions.
 ## Learning goals 🧠
 
 -   Practice general R skills to inspect microbiota count data and taxonomy
+
 -   Gain basic familiarity with specialist microbiome R packages: `phyloseq` and `microViz`
+
 -   Learn to calculate, visualise, and interpret standard richness and diversity indices: Observed Richness and (Effective) Shannon diversity
 
 ## Load R packages 📦
