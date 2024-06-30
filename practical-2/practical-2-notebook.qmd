@@ -25,6 +25,8 @@ Remember to take your time to understand each step. Don't rush to the end, there
 
 Do include your own notes. When you are working on your own analyses, you can share these documents with your supervisors and collaborators.
 
+. . .
+
 ### Load R packages
 
 ```{r}
@@ -33,39 +35,59 @@ Do include your own notes. When you are working on your own analyses, you can sh
 
 ### Read phyloseq data
 
-```{r}
-
-```
-
-## Diversity
+. . .
 
 ```{r}
 
 ```
+
+. . .
+
+## Alpha diversity analyses
+
+. . .
 
 ### Richness
 
+. . .
+
 ```{r}
 
 ```
+
+. . .
 
 ### Diversity
 
+. . .
+
 ```{r}
 
 ```
+
+. . .
 
 ## Dissimilarity & Ordination
 
+. . .
+
+### PCoA plots
+
 ```{r}
 
 ```
+
+. . .
 
 ## PERMANOVA
 
+. . .
+
 ```{r}
 
 ```
+
+. . .
 
 ## Interactive ordination!
 
@@ -77,11 +99,17 @@ But do include some code for ordination plots that `ord_explore` helped you to c
 
 ```
 
+. . .
+
 ## PCA
+
+. . .
 
 ```{r}
 
 ```
+
+. . .
 
 ### Circular bar chart
 
@@ -99,25 +127,39 @@ You could include some stacked bar charts here before the differential abundance
 
 ```
 
+. . .
+
 ### Taxon regression models
+
+. . .
 
 ```{r}
 
 ```
+
+. . .
 
 ### Tree plots
 
+. . .
+
 ```{r}
 
 ```
+
+. . .
 
 ## Extension activities?
 
-If you get to the extension activities, you can add your code to this document.
+If you get to the extension activities, you can add that code to this document too.
+
+Keep things organised with headings.
 
 ```{r}
 
 ```
+
+. . .
 
 ## Session info
 
