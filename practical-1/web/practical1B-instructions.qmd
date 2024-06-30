@@ -273,6 +273,8 @@ Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.
 taxonomy %>% filter(OTU %in% c("OTU_00001", "OTU_00002"))
 ```
 
+You could also select a subset of variables to look at:
+
 ```{r}
 taxonomy %>%
   filter(OTU %in% c("OTU_00001", "OTU_00002")) %>%
@@ -280,7 +282,7 @@ taxonomy %>%
 ```
 :::
 
-##### Task 5
+##### Task 5?
 
 Now make histograms and look up the taxonomy for the next thousand OTUs...
 

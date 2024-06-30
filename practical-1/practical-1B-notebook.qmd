@@ -139,7 +139,7 @@ Remember to add 1 before log10 transformation of both variables.
 
 ```
 
-##### Task 4
+#### Task 4
 
 But what type of bacteria do these amplicon sequences belong to?
 
@@ -147,6 +147,12 @@ Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.
 
 ```{r}
 
+```
+
+#### Task 5? 
+
+```{r}
+# Check the solution
 ```
 
 ## Assemble a phyloseq 🛠️
