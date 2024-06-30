@@ -60,13 +60,12 @@ Does the bacterial gut microbiota composition of IBD-diagnosed patients differ f
 
 -   **Taxa:** Is the relative abundance of specific bacterial taxa (e.g. genera) associated with IBD diagnosis?
 
-
 ### Methods
 
 1.  **Diversity**
     -   Compare richness and diversity between groups
 2.  **Dissimilarity**
-    -   Create (interactive) ordination plots and bar charts
+    -   (Interactively) Create ordination plots and bar charts
     -   Compare overall compositions between groups
 3.  **Differential abundance**
     -   Compare relative abundance of individual taxa between groups
@@ -575,7 +574,6 @@ ps %>%
 ```
 :::
 
-
 ::: {.callout-important collapse="false"}
 ##### Unblock popups?!
 
@@ -660,7 +658,7 @@ pca
 
 #### Interpretation
 
-Interestingly, samples on the right of the plot (which tend to be UC patients) seem to have relatively more *Escherichia/Shigella*, and less *Blautia*, *Faecalibacterium* and *Roseburia*.
+Interestingly, samples on the right of the plot (which tend to be UC patients) seem to have relatively more *Escherichia/Shigella*, and maybe less *Blautia*, *Faecalibacterium* and *Roseburia*.
 
 ::: {.callout-caution collapse="false"}
 ###### Your plot may be mirrored!
@@ -672,7 +670,6 @@ But on your computer, the PCA plot might be mirrored, so they would be on the le
 This is **not** a problem, as the sign (plus or minus) of a PC and its loadings is arbitrary, and the interpretation does not change.
 
 This happens on different computers if they use slightly different software to solve linear algebra problems.
-
 :::
 
 ::: {.callout-important collapse="true"}
@@ -1161,19 +1158,19 @@ If you have already carefully gone through everything above, you may be ready fo
 
 ### The secondary aims
 
-#### **Medication:**
-
-Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
-
 #### **Disease Activity:**
 
 Is current disease activity level associated with microbiota diversity, composition, or the relative abundance of specific taxa?
+
+#### **Medication:**
+
+Are IBD-related medications associated with microbiota diversity, composition, or the relative abundance of specific taxa?
 
 ### Instructions?
 
 No code is provided for this challenge - just suggestions.
 
-#### Disease activity
+#### **Disease activity:**
 
 IBD is characterised by periods of active symptomatic disease interspersed with inactive or less symptomatic periods.
 
@@ -1183,9 +1180,9 @@ Try looking at only the IBD patients (i.e. filter out the controls) to assess if
 
 **Tip:** A good place to start is with `ps_filter` and `ord_explore`
 
-#### Medication:
+#### **Medication:**
 
-Several patients recently took antibiotics, or corticosteroids or other immunosuppressive medications. 
+Several patients recently took antibiotics, or corticosteroids or other immunosuppressive medications.
 
 These medications are often used to manage symptoms or slow disease progression in IBD.
 
@@ -1193,13 +1190,18 @@ It is also reasonable to hypothesise that they might affect the gut microbiota c
 
 Try creating a correlation heatmap to assess associations between the abundance of top genera and each medication.
 
-Look at this tutorial article for ideas:
+Look at this tutorial article for ideas:\
+[https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html#correlation-heatmaps](https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html#correlation-heatmaps){target="_blank"}
 
-<https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html#correlation-heatmaps>{target="_blank"}
-
-**Tip 1:** You will need to convert the medication variables to integers: `0` for medication not used, `1` for medication used.
+**Tip 1:** Convert each variable to binary integers: `0` for medication not used, `1` for medication used.
 
 **Tip 2:** Use a non-parametric correlation measure, and don't include too many taxa.
+
+## Next
+
+The final challenge awaits in Practical 3, which you can start after the metagenomics lecture.
+
+[david-barnett.github.io/2024-NUTRIM-microbiome/practical-3/web/practical3-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-3/web/practical3-instructions.html)
 
 ## Session info
 

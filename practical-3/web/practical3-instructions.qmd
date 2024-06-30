@@ -1,0 +1,104 @@
+---
+title: "Practical 3 - metagenomics dataset"
+subtitle: "2024 NUTRIM microbiome & metabolome workshop"
+author: David Barnett
+date: last-modified
+format: html
+keep-md: false
+theme: 
+  light: flatly
+  dark: darkly
+css: ../../.css/instructions.css
+embed-resources: true
+code-block-border-left: true
+code-block-bg: true
+toc: true
+toc-location: right
+toc-depth: 4
+toc-expand: 1
+other-links:
+  - text: "Course overview"
+    href: "https://david-barnett.github.io/2024-NUTRIM-microbiome"
+    icon: "house"
+    target: "_blank"
+  - text: "posit.cloud workspace"
+    href: "https://posit.cloud/spaces/526847"
+    icon: "cloud"
+    target: "_blank"
+number-sections: true
+number-depth: 3
+fig-align: center
+fig-dpi: 200
+fig-width: 7.5
+fig-height: 5
+fig-responsive: true
+code-tools: true
+code-fold: false
+code-link: true
+lightbox: auto
+link-external-icon: true
+---
+
+## Introduction to Practical 3:
+
+In this final practical, you will be challenged to write your own code to analyse a new dataset.
+
+This dataset comprises taxonomic profiles inferred from shotgun metagenomic sequencing of stool samples from another cohort of IBD and control patients.
+
+These data represent a small cross-sectional subset from the Inflammatory Bowel Disease Multi-Omics Database [https://ibdmdb.org/](https://ibdmdb.org/){target="_blank"}
+
+## Objectives
+
+The overall aim of Practical 3 is to activate and reinforce the skills you have learned today.
+
+**You should attempt to:**
+
+1.  Read in and inspect the metadata - describing the participant characteristics
+
+2.  Read in a phyloseq containing abundance and taxonomy tables and attach the metadata to it
+
+3.  Explore the metagenomics data compositions using bar charts, ordinations, and diversity analyses
+
+4.  Define and test hypotheses using PERMANOVA, differential abundance tests, and other stats methods
+
+## Skills practised:
+
+1.  Modifying and extending Quarto documents for recording and reporting data analyses
+
+2.  Fundamental R skills for data import, exploration, manipulation, and visualisation
+
+3.  Application of specialist methods for exploration and analysis of microbiota compositions
+
+## Advice
+
+Practical 3 is expected to be challenging, especially for beginners.
+
+But, hopefully, this exercise will show you the gaps in your current understanding, so that we can address them.
+
+-   Work independently or in collaboration with your neighbours.
+
+-   Look back at the previous practicals for inspiration and code.
+
+-   Ask questions when you get stuck.
+
+-   Try to keep your Quarto notebook organised.
+
+## Useful information
+
+Use the `practical-3-notebook.qmd` on posit.cloud
+
+The input data are found at the following relative file paths inside the project folder:
+
+-   phyloseq object: `"data/practical3/practical-3-phyloseq.rds"`
+
+-   metadata table: `"data/practical3/practical-3-metadata.csv"`
+
+## Alternatives
+
+Feel free to keep working through the practical 2 instructions, if you were not finished.
+
+If you already have your own microbiome data for a research project, you can ask questions about your own analyses during this final session.
+
+::: callout-note
+p.s. Don't forget to fill in the course evaluation form for day 1 before you leave 😇
+:::
