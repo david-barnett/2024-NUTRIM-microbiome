@@ -20,9 +20,7 @@ Start with practical 1 - part A - click the link and follow the instructions.
 
 ### Practical 2
 
--   **Practical:** [david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html)
-
--   **Extension**: [david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2extra-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2extra-instructions.html)
+-   [david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html)
 
 ### Practical 3
 
