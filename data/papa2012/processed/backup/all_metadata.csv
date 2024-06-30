@@ -1,0 +1,91 @@
+ID,sample,case_control,diagnosis,activity,active,gender,ethnicity,family_history,age_years,immunosuppression_level,medication,ibd_fhx,abx,steroids,imsp_other,imsp_any
+099A,099-AX,Case,UC,severe,active,female,White,nofhx,17,level3,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+199A,199-AX,Control,Other,control,control,female,Other,NA,5,none,none,NA,FALSE,FALSE,FALSE,FALSE
+062B,062-BZ,Case,CD,mild,active,male,White,nofhx,16,level3,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+194A,194-AZ,Case,UC,mild,active,male,White,nofhx,15,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+166A,166-AX,Case,UC,severe,active,female,Black,NA,20,none,abx,NA,TRUE,FALSE,FALSE,FALSE
+219A,219-AX,Case,UC,inactive,inactive,female,NA,nofhx,18,level3,"abx, imsp",FALSE,TRUE,FALSE,TRUE,TRUE
+132A,132-AX,Case,CD,mild,active,female,White,nofhx,12,level2,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+026A,026-AX,Case,UC,mild,active,male,White,nofhx,10,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+102A,102-AZ,Control,Other,control,control,male,White,fhx,3,none,none,TRUE,FALSE,FALSE,FALSE,FALSE
+140A,140-AX,Control,Other,control,control,female,White,nofhx,5,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+005A,005-AX,Control,Other,control,control,male,White,nofhx,17,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+080A,080-AX,Case,CD,severe,active,male,Other,fhx,14,level1,steroids,TRUE,FALSE,TRUE,FALSE,TRUE
+103A,103-AX,Case,CD,inactive,inactive,male,White,fhx,14,level2,imsp,TRUE,FALSE,FALSE,TRUE,TRUE
+234A,234-AX,Control,Other,control,control,female,Asian,nofhx,17,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+222A,222-AZ,Case,UC,inactive,inactive,male,White,nofhx,11,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+136A,136-AX,Case,UC,mild,active,male,Other,fhx,4,level1,steroids,TRUE,FALSE,TRUE,FALSE,TRUE
+016A,016-AX,Case,CD,inactive,inactive,male,NA,fhx,10,level2,"steroids, imsp",TRUE,FALSE,TRUE,TRUE,TRUE
+018A,018-AX,Case,CD,inactive,inactive,male,White,nofhx,19,level3,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+172A,172-AX,Case,UC,moderate,active,male,White,fhx,20,level4,"abx, imsp",TRUE,TRUE,FALSE,TRUE,TRUE
+124A,124-AX,Control,Other,control,control,female,White,fhx,9,none,none,TRUE,FALSE,FALSE,FALSE,FALSE
+155A,155-AX,Control,Other,control,control,male,White,nofhx,4,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+233A,233-AX,Case,CD,inactive,inactive,male,White,fhx,12,level0,mesalamine only,TRUE,FALSE,FALSE,FALSE,FALSE
+216A,216-AY,Case,UC,moderate,active,male,White,nofhx,18,level0,mesalamine only,FALSE,FALSE,FALSE,FALSE,FALSE
+215A,215-AX,Case,UC,mild,active,female,Black,nofhx,6,level0,mesalamine only,FALSE,FALSE,FALSE,FALSE,FALSE
+038A,038-AX,Case,UC,mild,active,female,Black,nofhx,19,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+048A,048-AX,Case,UC,inactive,inactive,male,White,fhx,12,level0,mesalamine only,TRUE,FALSE,FALSE,FALSE,FALSE
+195A,195-AZ,Case,CD,mild,active,female,White,NA,13,level1,steroids,NA,FALSE,TRUE,FALSE,TRUE
+024A,024-AX,Control,Other,control,control,female,White,nofhx,11,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+202A,202-AX,Case,UC,inactive,inactive,male,White,fhx,11,level3,imsp,TRUE,FALSE,FALSE,TRUE,TRUE
+086A,086-AY,Case,UC,inactive,inactive,male,White,nofhx,15,none,NA,FALSE,NA,NA,NA,NA
+148A,148-AX,Control,Other,control,control,female,White,NA,15,none,none,NA,FALSE,FALSE,FALSE,FALSE
+182A,182-AX,Case,UC,inactive,inactive,female,White,nofhx,16,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+184A,184-AX,Case,CD,inactive,inactive,female,White,nofhx,16,level3,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+179A,179-AX,Case,CD,inactive,inactive,male,White,NA,19,level2,"steroids, abx, imsp",NA,TRUE,TRUE,TRUE,TRUE
+228A,228-AY,Case,UC,moderate,active,female,White,nofhx,14,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+180A,180-AX,Case,CD,mild,active,male,White,nofhx,18,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+165A,165-AX,Case,UC,mild,active,female,NA,nofhx,8,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+119A,119-AX,Case,UC,inactive,inactive,female,White,fhx,10,level0,mesalamine only,TRUE,FALSE,FALSE,FALSE,FALSE
+118B,118-BX,Case,UC,mild,active,male,White,nofhx,13,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+074A,074-AX,Case,CD,inactive,inactive,male,White,nofhx,15,level3,"abx, imsp",FALSE,TRUE,FALSE,TRUE,TRUE
+031A,031-AX,Control,Other,control,control,female,White,nofhx,8,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+004A,004-AX,Case,UC,severe,active,male,White,fhx,18,level2,"steroids, imsp",TRUE,FALSE,TRUE,TRUE,TRUE
+150A,150-AX,Case,CD,inactive,inactive,female,White,nofhx,3,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+003A,003-AX,Case,UC,severe,active,male,White,fhx,7,level4,"steroids, abx, imsp",TRUE,TRUE,TRUE,TRUE,TRUE
+151A,151-AX,Case,CD,inactive,inactive,female,White,fhx,16,level1,"steroids, abx",TRUE,TRUE,TRUE,FALSE,TRUE
+012A,012-AX,Case,UC,inactive,inactive,male,White,fhx,15,none,NA,TRUE,NA,NA,NA,NA
+127A,127-AX,Case,UC,moderate,active,female,White,nofhx,12,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+008A,008-AX,Case,CD,moderate,active,female,White,nofhx,12,level2,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+030A,030-AX,Control,Other,control,control,male,White,fhx,8,none,none,TRUE,FALSE,FALSE,FALSE,FALSE
+009A,009-AX,Case,UC,severe,active,female,NA,nofhx,15,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+131A,131-AX,Control,Other,control,control,male,White,nofhx,9,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+027A,027-AX,Case,UC,moderate,active,female,White,nofhx,11,level3,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+139A,139-AX,Case,UC,mild,active,male,White,nofhx,16,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+041A,041-AX,Control,Other,control,control,male,White,nofhx,7,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+156A,156-AX,Case,CD,inactive,inactive,male,Black,nofhx,13,level3,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+177A,177-AX,Case,UC,mild,active,male,White,fhx,9,none,NA,TRUE,NA,NA,NA,NA
+213B,213-BY,Case,CD,moderate,active,female,White,fhx,12,level1,steroids,TRUE,FALSE,TRUE,FALSE,TRUE
+146A,146-AX,Control,Other,control,control,male,White,nofhx,5,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+185A,185-AX,Control,Other,control,control,female,White,nofhx,14,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+114C,114-CX,Case,UC,mild,active,female,White,nofhx,19,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+209A,209-AZ,Control,Other,control,control,female,White,NA,5,none,none,NA,FALSE,FALSE,FALSE,FALSE
+051A,051-AX,Case,CD,mild,active,male,White,fhx,9,level2,imsp,TRUE,FALSE,FALSE,TRUE,TRUE
+079A,079-AX,Case,UC,mild,active,male,White,fhx,11,level4,"steroids, abx, imsp",TRUE,TRUE,TRUE,TRUE,TRUE
+120D,120-DX,Case,UC,mild,active,female,White,fhx,14,level0,mesalamine only,TRUE,FALSE,FALSE,FALSE,FALSE
+200A,200-AZ,Control,Other,control,control,male,White,fhx,8,none,none,TRUE,FALSE,FALSE,FALSE,FALSE
+218A,218-AX,Control,Other,control,control,female,White,nofhx,14,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+178A,178-AX,Case,UC,inactive,inactive,male,White,nofhx,15,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+207A,207-AZ,Case,UC,moderate,active,female,White,nofhx,16,level2,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+034B,034-BX,Case,UC,inactive,inactive,female,White,nofhx,13,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+162A,162-AX,Case,UC,mild,active,female,Other,nofhx,10,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+130A,130-AX,Case,UC,inactive,inactive,male,White,fhx,17,level2,imsp,TRUE,FALSE,FALSE,TRUE,TRUE
+211A,211-AX,Case,CD,inactive,inactive,male,White,nofhx,13,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+226A,226-AX,Control,Other,control,control,female,Other,NA,12,none,none,NA,FALSE,FALSE,FALSE,FALSE
+046A,046-AY,Control,Other,control,control,male,Black,nofhx,5,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+160A,160-AX,Case,UC,mild,active,male,White,nofhx,11,level2,"steroids, imsp",FALSE,FALSE,TRUE,TRUE,TRUE
+193A,193-AX,Case,CD,inactive,inactive,male,White,fhx,16,level3,"steroids, imsp",TRUE,FALSE,TRUE,TRUE,TRUE
+206A,206-AZ,Case,CD,inactive,inactive,female,Other,nofhx,14,level3,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+186A,186-AX,Case,UC,severe,active,female,White,nofhx,14,level1,"steroids, abx",FALSE,TRUE,TRUE,FALSE,TRUE
+192A,192-AX,Case,UC,moderate,active,female,White,nofhx,12,level0,mesalamine only,FALSE,FALSE,FALSE,FALSE,FALSE
+164A,164-AX,Case,UC,severe,active,female,White,fhx,21,level1,"steroids, abx",TRUE,TRUE,TRUE,FALSE,TRUE
+191C,191-CX,Case,UC,mild,active,female,White,nofhx,9,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+035A,035-AX,Case,UC,severe,active,male,White,nofhx,12,level1,steroids,FALSE,FALSE,TRUE,FALSE,TRUE
+171A,171-AX,Case,UC,moderate,active,male,White,NA,24,level2,"steroids, imsp",NA,FALSE,TRUE,TRUE,TRUE
+210A,210-AX,Control,Other,control,control,female,Asian,NA,13,none,none,NA,FALSE,FALSE,FALSE,FALSE
+025A,025-AX,Case,CD,inactive,inactive,female,White,nofhx,20,level2,imsp,FALSE,FALSE,FALSE,TRUE,TRUE
+198A,198-AX,Case,CD,moderate,active,female,White,NA,19,level1,"steroids, abx",NA,TRUE,TRUE,FALSE,TRUE
+187A,187-AX,Control,Other,control,control,female,White,NA,12,none,none,NA,FALSE,FALSE,FALSE,FALSE
+153A,153-AX,Control,Other,control,control,male,White,nofhx,4,none,none,FALSE,FALSE,FALSE,FALSE,FALSE
+142A,142-AX,Case,UC,moderate,active,female,White,nofhx,14,level4,"steroids, abx, imsp",FALSE,TRUE,TRUE,TRUE,TRUE
+106A,106-AZ,Control,Other,control,control,female,White,nofhx,8,none,none,FALSE,FALSE,FALSE,FALSE,FALSE

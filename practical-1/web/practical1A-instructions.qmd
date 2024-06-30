@@ -648,18 +648,25 @@ all_meta <- all_meta %>% mutate(
   active = factor(active, c("control", "inactive", "active")),
   activity = factor(activity, c("control", "inactive", "mild", "moderate", "severe"))
 )
-
-# you do the same for immunosuppression_level! don't forget to check the result
 ```
 
+Now you do the same for `immunosuppression_level`! Don't forget to check the result
+
+::: {.callout-tip collapse="true"}
+#### Click for solution
+
 ```{r}
-#| include: false
 all_meta <- all_meta %>% mutate(
   immunosuppression_level = factor(x = immunosuppression_level, c(
     "none", "level0", "level1", "level2", "level3", "level4"
   ))
 )
 ```
+
+```{r}
+all_meta %>% select(diagnosis, activity, immunosuppression_level)
+```
+:::
 
 ## Save your progress 💾
 
@@ -688,6 +695,15 @@ RDS files are R's native format for saving single R objects. They preserve data 
 
 ```{r}
 saveRDS(all_meta, here(output_path, "all_metadata.rds"))
+```
+
+```{r}
+#| include: false
+# these files can be used if participants fail to replicate processing
+dir.create(here(output_path, "backup"))
+write_csv(all_meta, here(output_path, "backup", "all_metadata.csv"))
+write_xlsx(all_meta, here(output_path, "backup", "all_metadata.xlsx"))
+saveRDS(all_meta, file = here(output_path, "backup", "all_metadata.rds"))
 ```
 
 ## Next! ⏩

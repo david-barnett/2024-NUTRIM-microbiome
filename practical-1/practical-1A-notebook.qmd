@@ -10,55 +10,26 @@ theme:
   light: flatly
   dark: darkly
 toc: true
-number-sections: true
 ---
-
-## Learning goals 💪
-
--   [Using Quarto](#using-quarto)
--   [Reading tabular data](#reading-data)
--   [Inspecting data](#inspecting-data)
--   [Joining dataframes](#joining-dataframes)
--   [Mutating dataframes](#mutating-data)
-
-## Using Quarto 📝 {#using-quarto}
-
-During this workshop, we will write code and notes in Quarto documents.
-
-Write notes in "[markdown](https://quarto.org/docs/authoring/markdown-basics.html "Markdown is plain text, with special characters to indicate headings, bold text, links etc"){target="_blank"}", e.g. your intentions, hypotheses, observations, etc.
-
-```{r}
-# write code in "chunks" (and comments too, using the # symbol)
-print("Hello World")
-```
-
-Insert a chunk with ctrl/cmd + shift + I
-
-```{r, eval=FALSE}
-print("Run this one line with ctrl + enter, or cmd + enter on macOS")
-print("or run a whole chunk with ctrl/cmd + SHIFT + enter")
-```
-
-Run all previous chunks by clicking the first button in the corner of the chunk
 
 ## Load R packages 📦
 
-It is good practice to load all the packages you need at the top of your notebook.
+Load all the required R packages.
 
 ```{r}
 
 ```
 
-## Reading data 📂 {#reading-data}
+## Reading data 📂 
 
-How do we read a table of data from a file, e.g. an Excel file?
+Read metadata table from Excel file
 
 ```{r}
 # give your objects short but informative names!
 meta <- 
 ```
 
-## Inspecting data {#inspecting-data}
+## Inspecting data
 
 ### Look at the tables 👀
 
@@ -70,39 +41,45 @@ Look at the metadata.
 
 ### Summarise 📋
 
-You can count the number of times a category occurs, similar to the table function.
+Check number of participants per diagnosis group.
 
 ```{r}
 meta %>% count(diagnosis)
 ```
 
-Or count combinations of categories.
+Check other category counts.
 
 ```{r}
-meta %>% 
+
 ```
 
-Or compute other summary statistics.
+Compute other summary statistics.
 
 ```{r}
 meta %>% summarise(age_mean = mean(age_years), age_sd = sd(age_years))
 ```
 
-Or compute grouped summary statistics
+Compute grouped summary statistics
 
 ```{r}
-meta %>% 
+
 ```
 
 ### Visualise 📊
 
-R's base graphics can be used to quickly summarise data distributions.
+Plot activity level bar chart with base R
 
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
 meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
+```
 
+Plot age histogram with base R
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
 meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
 ```
 
@@ -122,51 +99,19 @@ ggplot(meta) +
 #| fig-width: 6
 #| fig-height: 3
 ggplot(meta) + 
-  
 ```
 
-:::
+## Joining data 🟧+️🟪
 
-## Joining data 🟧+️🟪 {#joining-dataframes}
-
-Often, your data are not all in one table. For example, there were two sheets of data in the metadata Excel file, which we stored in the dataframe objects `meta` and `meds`
-
-::: panel-tabset
-#### meta
-
-The main dataframe `meta` contains most of the data about each patient:
+Join the main dataframe `meta` (containing most of the data about each patient) to the other dataframe `meds` (containing medications info for the IBD cases)
 
 ```{r}
-meta
-```
-
-#### meds
-
-The second dataframe `meds` contains medications info for the IBD cases:
-
-```{r}
-meds
-```
-:::
-
-`dplyr` provides functions to "join" dataframes together, using shared variables.
-
-```{r}
-all_meta <- left_join(meta, meds)
-```
-
-By default the join function will perform a "natural" join using all shared variables. For greater control you can specify a "key" variable, or set of variables, that should be used.
-
-```{r}
-# this should do the same thing as the natural join shown above
 all_meta <- left_join(meta, meds, by = 
 ```
 
-What happened with the Control group? (remember they were not present in `meds`!)
+Inspect the `all_meta` dataframe with `View(all_meta)`
 
-Inspect the `all_meta` dataframe to find out! e.g. `View(all_meta)`
-
-## Mutating data 🧬? {#mutating-data}
+## Mutating data 🧬? 
 
 Often, you need to modify your variables, or create new ones.
 
@@ -177,25 +122,14 @@ Often, you need to modify your variables, or create new ones.
 
 #### Base R 🤖
 
-For simple transformations you can easily do this with base R.
-
 ```{r}
-# create a logical variable, TRUE if patient has family history of IBD
-all_meta$ibd_fhx <- all_meta$family_history == "fhx"
 
-# always check the result is what you expected!
-all_meta[, c("ID", "family_history", "ibd_fhx")]
 ```
+
 
 #### dplyr::mutate 👽
 
-The `mutate` function from dplyr is great for making multiple or complex transformations. You refer to variables without repeating the name of the dataframe. It is as if you are working "inside" the dataframe.
-
 ```{r}
-# this is equivalent to the previous block
-all_meta <- all_meta %>% mutate(
-
-# check the result again
 
 ```
 

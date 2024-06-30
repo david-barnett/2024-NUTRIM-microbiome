@@ -628,6 +628,12 @@ We can use the `saveRDS()` function to do this.
 saveRDS(ps_alpha, file = here("data", "papa2012", "processed", "papa12_phyloseq.rds"))
 ```
 
+```{r}
+#| include: false
+dir.create(here("data", "papa2012", "processed", "backup"))
+saveRDS(ps_alpha, file = here("data", "papa2012", "processed", "backup", "papa12_phyloseq.rds"))
+```
+
 ## Next! ⏩
 
 -   Its time to stop exploring and take a break.

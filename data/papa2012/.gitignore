@@ -1,2 +1,4 @@
-processed/*
-!processed/papa12_phyloseq.rds
+*.rds
+*.csv
+*.xlsx
+!processed/backup/*
