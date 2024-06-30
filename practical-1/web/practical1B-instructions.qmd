@@ -16,6 +16,15 @@ toc: true
 toc-location: right
 toc-depth: 4
 toc-expand: 1
+other-links:
+  - text: "Course overview"
+    href: "https://david-barnett.github.io/2024-NUTRIM-microbiome"
+    icon: "house"
+    target: "_blank"
+  - text: "posit.cloud workspace"
+    href: "https://posit.cloud/spaces/526847"
+    icon: "cloud"
+    target: "_blank"
 number-sections: true
 number-depth: 3
 fig-align: center
@@ -44,11 +53,11 @@ It started as huge fastq text files, full of As, Cs, Ts and Gs, but we will not 
 
 If you generate your data with us at Medical Microbiology, we will run the latest processing approaches on our computational infrastructure and provide you with the processed data.
 
-Nowadays we do amplicon sequencing with Illumina MiSeq, HiSeq, or similar technologies, and denoise the output with DADA2 to produce ASV count tables.
+Nowadays, we do amplicon sequencing with Illumina MiSeq, HiSeq, or similar technologies, and denoise the output with DADA2 to produce ASV count tables.
 
-The example data we will use are a little older. The amplicons were sequenced with 454 pyrosequencing and clustered into OTUs, but the core principles of analysis remain the same.
+The example data we will use today are older. The amplicons were sequenced with "454 pyrosequencing" and clustered into OTUs, but the core principles of analysis remain the same.
 
-And as you will see later today, the same approaches can also be applied to taxonomic abundance count tables obtained from shotgun metagenomic sequencing.
+And as you will see later today, the same approaches can also be applied to taxonomic abundance tables obtained from shotgun metagenomic sequencing.
 :::
 
 First we're going to use the R skills we practised in part 1A to inspect this data.
@@ -57,8 +66,11 @@ First we're going to use the R skills we practised in part 1A to inspect this da
 ### SOLUTION: Click me?
 
 -   In this practical, solution blocks like this are available...
+
 -   But try and write code independently before looking at the answer!
+
 -   Attempting to recall knowledge or solve problems is proven to enhance learning.
+
 -   So don't look unless you're really stuck! 💪
 :::
 
@@ -96,7 +108,7 @@ counts <- read_tsv(file = here("data/papa2012/papa2012_OTU_count_table.txt"))
 counts
 ```
 
-#### **Your first challenge:** 
+#### **Your first challenge:**
 
 Read the taxonomy table stored in `"data/papa2012/papa2012_taxonomy_table.txt"`
 
@@ -621,7 +633,7 @@ saveRDS(ps_alpha, file = here("data", "papa2012", "processed", "papa12_phyloseq.
 -   Its time to stop exploring and take a break.
 -   In the next lecture you will learn more about the main approaches for microbiota data analysis.
 -   In the next practical session, we will come back to these data with a plan, an analysis plan!
--   Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2A-instructions.html>
+-   Click here: <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html>
 
 ## Session info
 

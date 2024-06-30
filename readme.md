@@ -19,7 +19,7 @@
 ### Practical 2
 
 -   **Part 2A**: Work in progress\
-    <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2A-instructions.html>
+    <https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-2/web/practical2-instructions.html>
 
 -   **Part 2B**: Work in progress
 
