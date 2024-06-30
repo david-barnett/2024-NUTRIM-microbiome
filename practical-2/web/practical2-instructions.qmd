@@ -1181,9 +1181,15 @@ It is reasonable to hypothesise that microbiota dysbiosis might be more pronounc
 
 Try looking at only the IBD patients (i.e. filter out the controls) to assess if disease activity is associated with microbiota diversity or composition.
 
+**Tip:** A good place to start is with `ps_filter` and `ord_explore`
+
 #### Medication:
 
-Several patients recently took corticosteroids or other immunosuppressive medications - 
+Several patients recently took antibiotics, or corticosteroids or other immunosuppressive medications. 
+
+These medications are often used to manage symptoms or slow disease progression in IBD.
+
+It is also reasonable to hypothesise that they might affect the gut microbiota composition.
 
 Try creating a correlation heatmap to assess associations between the abundance of top genera and each medication.
 
@@ -1191,7 +1197,9 @@ Look at this tutorial article for ideas:
 
 <https://david-barnett.github.io/microViz/articles/web-only/heatmaps.html#correlation-heatmaps>{target="_blank"}
 
-Tip: You will need to convert the medication variables to integers: 0 for not used, 1
+**Tip 1:** You will need to convert the medication variables to integers: `0` for medication not used, `1` for medication used.
+
+**Tip 2:** Use a non-parametric correlation measure, and don't include too many taxa.
 
 ## Session info
 
