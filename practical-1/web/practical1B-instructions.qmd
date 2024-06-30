@@ -616,7 +616,7 @@ ps_alpha %>%
 ```
 :::
 
-### Save our phyloseq
+## Save our phyloseq
 
 We have assembled a phyloseq object and calculated richness and diversity measures.
 

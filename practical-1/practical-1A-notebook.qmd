@@ -6,9 +6,7 @@ date: last-modified
 keep-md: false
 embed-resources: true
 format: html
-theme: 
-  light: flatly
-  dark: darkly
+theme: flatly
 toc: true
 ---
 
@@ -17,7 +15,15 @@ toc: true
 Follow the instructions online at: \
 [david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1A-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1A-instructions.html)
 
-Write your notes and code together in this notebook file. Take your time. Ask for help if confused.
+Some of the code and notes in this notebook are completed for you. The rest you will need to complete by following the the instructions.
+
+-   Keep your notes and code in this document.
+
+-   Check everything runs in order.
+
+-   Take your time to understand each step.
+
+-   Ask for help if confused.
 
 ## Load R packages 📦
 
@@ -107,6 +113,7 @@ Plot activity level bar chart with ggplot2
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
+
 
 ```
 

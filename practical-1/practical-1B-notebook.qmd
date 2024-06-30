@@ -1,0 +1,316 @@
+---
+title: "Practical 1B - microbiota data"
+subtitle: "2024 NUTRIM microbiome & metabolome workshop"
+author: YOUR-NAME
+date: last-modified
+keep-md: false
+embed-resources: true
+format: html
+theme: flatly
+toc: true
+---
+
+## Instructions
+
+Follow the instructions online at: \
+[david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1B-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1B-instructions.html)
+
+Some of the code and notes in this notebook are completed for you.
+
+The rest you will need to complete by following the the instructions.
+
+-   Keep your notes and code in this document.
+
+-   Check everything runs in order.
+
+-   Take your time to understand each step.
+
+-   Ask for help if confused.
+
+## Learning goals 🧠
+
+-   Practice general R skills to inspect microbiota count data and taxonomy
+-   Gain basic familiarity with specialist microbiome R packages: `phyloseq` and `microViz`
+-   Learn to calculate, visualise, and interpret standard richness and diversity indices: Observed Richness and (Effective) Shannon diversity
+
+## Load R packages 📦
+
+```{r}
+library(readxl)
+library(here)
+library(tidyverse)
+```
+
+## Read and inspect data 🔍
+
+Read the metadata file.
+
+```{r}
+meta <- read_rds(file = here("data/papa2012/processed/all_metadata.rds"))
+```
+
+Read the count table.
+
+```{r}
+counts <- read_tsv(file = here("data/papa2012/papa2012_OTU_count_table.txt"))
+```
+
+```{r}
+counts
+```
+
+#### **First challenge:**
+
+Read the taxonomy table stored in `"data/papa2012/papa2012_taxonomy_table.txt"`
+
+Call the object `taxonomy`
+
+```{r}
+
+```
+
+### Taxonomy table
+
+Now practice inspecting the taxonomy table by completing the following tasks:
+
+#### Task 1
+
+Check how many distinct genera there are.
+
+```{r}
+
+```
+
+#### Task 2
+
+How many OTUs are there in each Phylum?
+
+```{r}
+
+```
+
+#### Task 3
+
+What genera are in the phylum Actinobacteria?
+
+```{r}
+
+```
+
+### OTU count table
+
+Plot a histogram of OTU number 1.
+
+```{r, fig.width=8, fig.height=2}
+counts %>% ggplot(aes(OTU_00001)) + geom_histogram(binwidth = 5)
+```
+
+Attempt the following tasks to explore further!
+
+#### Task 1
+
+Use `filter()` to plot only the non-zero entries for OTU 1.
+
+Try also using `+ scale_x_log10()` to transform the plot axis scale.
+
+```{r, fig.width=8, fig.height=2}
+
+```
+
+#### Task 2
+
+Use `mutate()` to create a temporary log-transformed variable `log_OTU1` and plot its distribution.
+
+(Add 1 to all values first.)
+
+```{r, fig.width=8, fig.height=2}
+
+```
+
+#### Task 3
+
+Plot OTU 1 against OTU 2 as a scatter plot using `geom_point`.
+
+Remember to add 1 before log10 transformation of both variables.
+
+```{r, fig.width=4, fig.height=4}
+
+```
+
+##### Task 4
+
+But what type of bacteria do these amplicon sequences belong to?
+
+Look up the classifications of OTU 1 and OTU 2 in the taxonomy table.
+
+```{r}
+
+```
+
+## Assemble a phyloseq 🛠️
+
+Load specialist microbiota analysis packages
+
+```{r}
+library(phyloseq)
+library(microViz)
+```
+
+Combining the three dataframes into one `phyloseq` object.
+
+### OTU counts + taxonomy
+
+phyloseq uses row or column names to match OTUs across the count and taxonomy tables.
+
+*In addition, the taxonomy table must contain only taxonomic ranks in descending order, and the count table must be converted to a numeric matrix.*
+
+Adjust the OTU count table.
+
+```{r}
+count_matrix <- counts %>% select(-sample) %>% as.matrix()
+rownames(count_matrix) <- counts$sample
+```
+
+Adjust the taxonomy table.
+
+```{r}
+
+```
+
+Combine the OTU and taxonomy tables into a phyloseq object: `ps`
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+### Adding sample metadata
+
+phyloseq uses row names to match samples (across the OTU count table and the sample metadata).
+
+```{r}
+head(sample_names(ps))
+```
+
+In the phyloseq object the sample names have underscores, but they have hyphens in the sample metadata.
+
+```{r}
+meta
+```
+
+Fix that with the `stringr` package `str_replace` function.
+
+```{r}
+
+```
+
+Now make them row names and check they all match.
+
+```{r}
+
+```
+
+Add the metadata to the phyloseq object.
+
+```{r}
+sample_data(ps) <- meta_df
+ps
+```
+
+## microViz data checks 🦠👁️
+
+```{r}
+# retrieve sample data as a tibble
+
+```
+
+```{r}
+# get the OTU table, or part of it
+
+```
+
+```{r}
+# get the taxonomy table
+
+```
+
+## Build some bar charts 📊
+
+Each bar represents one sample, and we show the abundance data as proportions.
+
+Bar chart with abundances aggregated by Phylum.
+
+```{r, message=FALSE}
+#| fig-width: 8
+#| fig-height: 3
+
+
+```
+
+In this chart I see ....
+
+Bar chart with abundances aggregated by Genus.
+
+```{r, message=FALSE}
+#| fig-width: 8
+#| fig-height: 4
+
+
+```
+
+This plot is aggregated into genera, which provides more detail, but is harder to read, and we cannot give every genus a distinct colour.
+
+We see that many samples contain a relatively large proportion of *Bacteroides* or *Faecalibacterium* but there is quite some further variation!
+
+Update the `ps` phyloseq object with the default taxonomy table fixes.
+
+```{r}
+ps <- tax_fix(ps)
+```
+
+## Discover diversity 🌳🌲🌴
+
+Calculating and visualising alpha diversity.
+
+### Observed richness
+
+Compute the observed richness of genera.
+
+```{r}
+
+```
+
+### Shannon diversity
+
+Calculate the Shannon diversity index at the level of Genus.
+
+Also compute the exponentiated version, the effective number of genera, or effective Shannon index.
+
+```{r}
+
+```
+
+### Diversity Distributions
+
+Plot simple histograms of the richness and diversity values.
+
+```{r}
+
+```
+
+### Interpreting diversity
+
+## Save the phyloseq
+
+```{r}
+
+```
+
+## Session info
+
+```{r}
+sessioninfo::session_info()
+```
