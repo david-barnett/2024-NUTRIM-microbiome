@@ -191,21 +191,13 @@ We now want logical variables indicating if the patient recently had antibiotics
 
 ```
 
-For the character variables with more than two values, we can convert them to factors, to encode our preferred ordering of their levels.
+For the character variables with more than two values, we convert them to factors, to encode our preferred ordering of their levels.
 
 ```{r}
 
 ```
 
-## Next! ⏩
-
--   We have recapped some R fundamentals and introduced the sample metadata.
-
--   Next we will start working with microbiome data!
-
 ## Session info
-
-For reproducibility, it is useful to record the packages and versions used in your analyses. This is easy to do with `sessioninfo::session_info()`.
 
 ```{r}
 sessioninfo::session_info()
