@@ -503,7 +503,6 @@ As a last task for this introductory session, we will calculate and visualise al
 
 ```{r}
 ps_alpha <- ps %>%
-  tax_fix() %>%
   ps_calc_richness(rank = "Genus", index = "observed", varname = "N_genera")
 ```
 

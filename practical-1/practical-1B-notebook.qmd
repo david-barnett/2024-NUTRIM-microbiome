@@ -311,6 +311,45 @@ Plot simple histograms of the richness and diversity values.
 
 ### Interpreting diversity
 
+#### **Observed Richness:** Number of Genera
+
+Each sample is sorted and labelled by the observed richness of genera
+
+Can you spot samples with equal richness but clear differences in evenness?
+
+```{r, message=FALSE, fig.height=11, fig.width=6, out.width="70%"}
+#| fig-align: "center"
+#| code-fold: true
+ps_alpha %>% 
+  ps_arrange(N_genera) %>% 
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 19, merge_other = FALSE, 
+    sample_order = "asis", label = "N_genera"
+  ) +
+  coord_flip()
+```
+
+Don't forget to look at the other tab, where the bars are labelled by their diversity!
+
+#### **Diversity:** Shannon Effective Number of Genera
+
+Now each sample is labelled with the effective Shannon diversity of genera ($e^H$)
+
+Do you see the general relationship of $e^H$ with sample composition?
+
+```{r, message=FALSE, fig.height=11, fig.width=6, out.width="70%"}
+#| fig-align: "center"
+#| code-fold: true
+ps_alpha %>% 
+  ps_arrange(Effective_Shannon_Genus) %>% 
+  ps_mutate(short_shannon = formatC(Effective_Shannon_Genus, digits = 1, format = "f")) %>% 
+  comp_barplot(
+    tax_level = "Genus", n_taxa = 19, merge_other = FALSE, 
+    sample_order = "asis", label = "short_shannon"
+  ) +
+  coord_flip()
+```
+
 ## Save the phyloseq
 
 ```{r}
