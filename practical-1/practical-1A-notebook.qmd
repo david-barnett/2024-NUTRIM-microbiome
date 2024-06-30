@@ -12,6 +12,13 @@ theme:
 toc: true
 ---
 
+## Instructions?
+
+Follow the instructions online at: \
+[david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1A-instructions.html](https://david-barnett.github.io/2024-NUTRIM-microbiome/practical-1/web/practical1A-instructions.html)
+
+Write your notes and code together in this notebook file. Take your time. Ask for help if confused.
+
 ## Load R packages 📦
 
 Load all the required R packages.
@@ -20,13 +27,14 @@ Load all the required R packages.
 
 ```
 
-## Reading data 📂 
+## Reading data 📂
 
 Read metadata table from Excel file
 
 ```{r}
 # give your objects short but informative names!
-meta <- 
+meta <- read_excel(path = here("data/papa2012/papa2012_metadata.xlsx"), na = "NA")
+meds <- read_excel(here("data/papa2012/papa2012_metadata.xlsx"), sheet = "treatment") 
 ```
 
 ## Inspecting data
@@ -67,14 +75,6 @@ Compute grouped summary statistics
 
 ### Visualise 📊
 
-Plot activity level bar chart with base R
-
-```{r}
-#| fig-width: 6
-#| fig-height: 3
-meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
-```
-
 Plot age histogram with base R
 
 ```{r}
@@ -83,27 +83,36 @@ Plot age histogram with base R
 meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
 ```
 
-ggplot2 is a popular and powerful plotting package.
-
-#### Bar chart
-
-```{r}
-#| fig-width: 8
-#| fig-height: 3
-ggplot(meta) + 
-```
-
-#### Histogram
+Plot activity level bar chart with base R
 
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
-ggplot(meta) + 
+meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
+```
+
+Plot age histogram with ggplot2
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+ggplot(meta) +
+  geom_histogram(aes(age_years), binwidth = 1) +
+  facet_wrap(~case_control, ncol = 1) +
+  theme_minimal()
+```
+
+Plot activity level bar chart with ggplot2
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+
 ```
 
 ## Joining data 🟧+️🟪
 
-Join the main dataframe `meta` (containing most of the data about each patient) to the other dataframe `meds` (containing medications info for the IBD cases)
+Join the main dataframe `meta` (containing most of the data about each patient) to the other dataframe `meds` (containing medications info for the IBD cases).
 
 ```{r}
 all_meta <- left_join(meta, meds, by = 
@@ -111,14 +120,9 @@ all_meta <- left_join(meta, meds, by =
 
 Inspect the `all_meta` dataframe with `View(all_meta)`
 
-## Mutating data 🧬? 
+## Mutating data 🧬
 
-Often, you need to modify your variables, or create new ones.
-
-### Modify and assign
-
-1.  Apply a function/transformation to an existing variable (or multiple variables).
-2.  Assign the result to a new variable, or overwrite the original variable.
+Data processing - modify variables and create new variables.
 
 #### Base R 🤖
 
@@ -126,35 +130,31 @@ Often, you need to modify your variables, or create new ones.
 
 ```
 
-
 #### dplyr::mutate 👽
 
 ```{r}
 
 ```
 
-### Temporary or persistent?
+### Temporary mutation and plot
 
-We can convert character string variables to factor variables to specify an ordering of their levels (e.g. for plotting).
-
-You can temporarily mutate a dataframe and use the result. This is easy with pipes.
+Temporarily mutate a dataframe and pipe the result into a plotting function.
 
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
-
 all_meta %>% 
   mutate(diagnosis = factor(diagnosis, levels = c("CD", "UC", "Other"))) %>% 
   ggplot(aes(diagnosis, age_years)) + geom_boxplot()
 ```
 
-Notice this did NOT persistently modify the diagnosis variable, it is still "character" class.
+Check this did NOT persistently modify the diagnosis variable, it is still "character" class.
 
 ```{r}
 class(all_meta$diagnosis) # no persistent changes, diagnosis is still character!
 ```
 
-`mutate` returns a modified dataframe and you must assign this to an object for changes to persist.
+`mutate` dataframe and assign result to an object to persist the changes.
 
 ```{r}
 #| fig-width: 6
@@ -169,11 +169,14 @@ class(all_meta$diagnosis)
 
 ### More mutation
 
-We need to clean up the medication history.
+Clean up the medication history.
+
+```{r}
+table(all_meta$immunosuppression_level, useNA = "if")
+```
 
 ```{r}
 table(all_meta$medication, useNA = "if")
-table(all_meta$immunosuppression_level, useNA = "if")
 ```
 
 We have NAs for the medication for all the Controls. We know they had "none", so let's first indicate that. We will also replace Controls' immunosuppression_level NA values with "none".
@@ -191,10 +194,7 @@ We now want logical variables indicating if the patient recently had antibiotics
 For the character variables with more than two values, we can convert them to factors, to encode our preferred ordering of their levels.
 
 ```{r}
-all_meta <- all_meta %>% mutate(
-  
 
-)
 ```
 
 ## Next! ⏩

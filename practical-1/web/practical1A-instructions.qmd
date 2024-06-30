@@ -271,20 +271,20 @@ meta %>% summarise(age_mean = mean(age_years), age_sd = sd(age_years), .by = dia
 R's base graphics can be used to quickly summarise data distributions.
 
 ::: panel-tabset
-#### Bar chart
-
-```{r}
-#| fig-width: 6
-#| fig-height: 3
-meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
-```
-
 #### Histogram
 
 ```{r}
 #| fig-width: 6
 #| fig-height: 3
 meta$age_years %>% hist(breaks = 10, main = NULL, xlab = "Age")
+```
+
+#### Bar chart
+
+```{r}
+#| fig-width: 6
+#| fig-height: 3
+meta$activity %>% table() %>% barplot(xlab = "Disease Activity")
 ```
 :::
 
