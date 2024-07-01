@@ -371,7 +371,7 @@ perm_get(perm_aitchison)
 :::
 :::
 
-You can see from the PERMANOVA model outputs that the p value is below 0.05. So there is good statistical evidence that the bacterial gut microbiota composition of C-section delivered infants has a different composition than vaginally delivered infants at 4 days of age.
+You can see from the PERMANOVA model outputs that the p value is below 0.05. So there is good statistical evidence that the bacterial gut microbiota composition differs by diagnosis group.
 
 ::: {.callout-note collapse="true"}
 #### Dissimilarity or distance?
