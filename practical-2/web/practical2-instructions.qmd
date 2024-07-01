@@ -92,6 +92,21 @@ Read the phyloseq we created in part 1.
 ps <- read_rds(file = here("data/papa2012/processed/papa12_phyloseq.rds"))
 ```
 
+::: {.callout-tip collapse="true"}
+#### "Wait, I did not finish part 1!"
+
+If you did not finish part 1B, you will not have created the phyloseq object.
+
+Don't worry, I prepared a backup copy, which you can use instead.
+
+```{r}
+ps <- read_rds(file = here("data/papa2012/processed/backup/papa12_phyloseq.rds"))
+```
+
+You may also use this backup copy if you finished part 1B, but suspect you did something wrong.
+
+:::
+
 ## Diversity
 
 Our research questions for this section are:
