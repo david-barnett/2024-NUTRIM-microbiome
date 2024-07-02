@@ -8,6 +8,13 @@
 
     -   Check your email for the link to join the posit.cloud space for this course
 
+## Slides
+
+-   Course intro (coming soon)
+-   [Microbiome Analysis Intro](https://docs.google.com/presentation/d/1YzxvIE38Blg-tQ5wXggN7vkSifVIOlSIooTXJCUj7K8/edit?usp=sharing)
+-   [More Microbiome Analysis](https://docs.google.com/presentation/d/1SqeevIkawzP8xFjdfitT2er3tsjPmHuxaeatFWHFA84/edit?usp=sharing)
+-   [Shotgun Metagenomics Intro](https://docs.google.com/presentation/d/1Av0GMmLcnakHXYjg_fSJhJUtQNuPpbHwgYx2VmBrSGc/edit?usp=sharing)
+
 ## Practical Instructions
 
 Start with practical 1 - part A - click the link and follow the instructions.
@@ -28,6 +35,6 @@ Start with practical 1 - part A - click the link and follow the instructions.
 
 ## Other links
 
--   microViz package website: [https://david-barnett.github.io/microViz/](https://david-barnett.github.io/microViz/)
+-   microViz package website: <https://david-barnett.github.io/microViz/>
 
 -   GitHub repo for source material: [github.com/david-barnett/2024-NUTRIM-microbiome](https://github.com/david-barnett/2024-NUTRIM-microbiome)
